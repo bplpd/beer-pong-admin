@@ -90,21 +90,44 @@
             &copy; 2025 Beer Pong Tournaments. All rights reserved.
           </p>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center justify-center gap-4">
           <div
-            class="text-sm text-[color:var(--color-text-secondary)] hover:text-white transition-colors"
+            class="text-sm text-[color:var(--color-text-secondary)] hover:text-white transition-colors items-center justify-center flex"
           >
             <a [routerLink]="['/privacy']">Privacy Policy</a>
           </div>
           <a
             href="https://www.buymeacoffee.com/dolfusp"
             target="_blank"
-            class="flex items-center gap-2"
+            class="group relative block h-8 w-[40px]"
           >
+            <!-- Tooltip bubble -->
+            <div
+              class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap"
+            >
+              <div class="relative">
+                <!-- Bubble content -->
+                <div
+                  class="bg-[color:var(--color-header-bg)] p-1 rounded-lg shadow-lg border border-[color:var(--color-border-primary)]"
+                >
+                  <img
+                    src="/assets/img/arial-yellow.png"
+                    alt="Buy Me A Coffee"
+                    class="h-[30px] w-[108px] max-w-[200px]"
+                  />
+                </div>
+                <!-- Bubble triangle -->
+                <div
+                  class="absolute -bottom-2 left-[47%] -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-t-[8px] border-t-[color:var(--color-border-primary)] border-r-[8px] border-r-transparent"
+                ></div>
+              </div>
+            </div>
+
+            <!-- Base icon -->
             <img
-              src="/assets/img/arial-yellow.png"
+              src="/assets/img/arial-yellow-cut.png"
               alt="Buy Me A Coffee"
-              class="hover:opacity-100 transition-opacity opacity-50 h-8"
+              class="h-[30px] w-[32px] opacity-50 hover:opacity-100 transition-opacity"
             />
           </a>
           <a
