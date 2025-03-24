@@ -1,0 +1,49 @@
+<div class="landing-container">
+  <section class="hero-section">
+    <div class="content">
+      <h1 class="title" @fadeInUp>
+        Beer Pong Tournament Manager
+      </h1>
+      <p class="subtitle" @fadeInUp>
+        Create, manage, and track your beer pong tournaments with ease. Professional tools for serious players.
+      </p>
+      <div class="text-center">
+        <button mat-raised-button class="cta-button" @bounce (click)="navigateToTournaments()">
+          <mat-icon>emoji_events</mat-icon>
+          Start Your Tournament
+        </button>
+      </div>
+      
+      <div class="features-grid">
+        @for (feature of features; track feature.title) {
+          <div class="feature-card" @slideInRight>
+            <mat-icon>{{ feature.icon }}</mat-icon>
+            <h3>{{ feature.title }}</h3>
+            <p>{{ feature.description }}</p>
+          </div>
+        }
+      </div>
+
+      <div class="scroll-indicator">
+        <mat-icon>expand_more</mat-icon>
+      </div>
+    </div>
+  </section>
+
+  <section class="rules-section">
+    <div class="content">
+      <h2 @fadeInUp>Official Tournament Rules</h2>
+      <div class="rules-grid">
+        @for (rule of rules; track rule.title) {
+          <div class="rule-card" @slideInRight>
+            <h3>
+              <mat-icon>{{ rule.icon }}</mat-icon>
+              {{ rule.title }}
+            </h3>
+            <p>{{ rule.description }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+</div>
