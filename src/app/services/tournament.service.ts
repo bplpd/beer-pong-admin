@@ -42,21 +42,7 @@ export interface Tournament {
 })
 export class TournamentService {
   private readonly STORAGE_KEY = 'tournaments';
-  private tournaments = new BehaviorSubject<Tournament[]>([
-    {
-      id: '1',
-      name: 'Summer Tournament 2024',
-      date: '2024-07-15',
-      description: 'Annual summer beer pong tournament',
-      status: 'pending',
-      teams: [],
-      matches: [],
-      currentPhase: 'group',
-      teamsPerGroup: 4,
-      numberOfGroups: 1,
-      knockoutQualifiers: 2,
-    },
-  ]);
+  private tournaments = new BehaviorSubject<Tournament[]>([]);
 
   constructor() {
     this.loadFromLocalStorage();
@@ -72,7 +58,7 @@ export class TournamentService {
   private saveToLocalStorage(): void {
     localStorage.setItem(
       this.STORAGE_KEY,
-      JSON.stringify(this.tournaments.value)
+      JSON.stringify(this.tournaments.value),
     );
   }
 
@@ -82,7 +68,7 @@ export class TournamentService {
 
   getTournament(id: string): Observable<Tournament | undefined> {
     return this.tournaments.pipe(
-      map((tournaments) => tournaments.find((t) => t.id === id))
+      map((tournaments) => tournaments.find((t) => t.id === id)),
     );
   }
 
@@ -94,8 +80,8 @@ export class TournamentService {
   updateTournament(tournament: Tournament): void {
     this.tournaments.next(
       this.tournaments.value.map((t) =>
-        t.id === tournament.id ? tournament : t
-      )
+        t.id === tournament.id ? tournament : t,
+      ),
     );
     this.saveToLocalStorage();
   }
@@ -114,7 +100,7 @@ export class TournamentService {
 
     // Calculate number of groups
     tournament.numberOfGroups = Math.ceil(
-      tournament.teams.length / tournament.teamsPerGroup
+      tournament.teams.length / tournament.teamsPerGroup,
     );
 
     // Reset team stats
@@ -129,7 +115,7 @@ export class TournamentService {
     for (let g = 0; g < tournament.numberOfGroups; g++) {
       const groupTeams = tournament.teams.slice(
         g * tournament.teamsPerGroup,
-        (g + 1) * tournament.teamsPerGroup
+        (g + 1) * tournament.teamsPerGroup,
       );
 
       // Generate round-robin matches for this group
@@ -163,7 +149,7 @@ export class TournamentService {
       const groupTeams = tournament.teams
         .slice(
           g * tournament.teamsPerGroup!,
-          (g + 1) * tournament.teamsPerGroup!
+          (g + 1) * tournament.teamsPerGroup!,
         )
         .sort((a, b) => (b.groupPoints || 0) - (a.groupPoints || 0))
         .slice(0, tournament.knockoutQualifiers);
@@ -225,7 +211,7 @@ export class TournamentService {
     tournament: Tournament,
     match: Match,
     team1Score: number,
-    team2Score: number
+    team2Score: number,
   ): void {
     match.team1Score = team1Score;
     match.team2Score = team2Score;
@@ -238,7 +224,7 @@ export class TournamentService {
 
         // Check if tournament is completed (final match is completed)
         const knockoutMatches = tournament.matches.filter(
-          (m) => m.phase === 'knockout'
+          (m) => m.phase === 'knockout',
         );
         const maxRound = Math.max(...knockoutMatches.map((m) => m.round || 0));
         const finalMatch = knockoutMatches.find((m) => m.round === maxRound);
@@ -287,7 +273,7 @@ export class TournamentService {
       (m) =>
         m.phase === 'knockout' &&
         m.round === nextRound &&
-        m.matchNumber === nextMatchNumber
+        m.matchNumber === nextMatchNumber,
     );
 
     if (nextMatch) {

@@ -1,138 +1,38 @@
-<div class="gh-container">
-  <div class="mb-6">
-    <h1 class="text-2xl font-semibold">
-      {{ isEditing ? "Edit Tournament" : "Create Tournament" }}
-    </h1>
-  </div>
+<div class="container">
+  <h2>{{ isEditing ? "Edit Tournament" : "Create Tournament" }}</h2>
+  <form [formGroup]="tournamentForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Tournament Name</mat-label>
+      <input matInput formControlName="name" required />
+    </mat-form-field>
 
-  <div class="gh-card max-w-2xl">
-    <form
-      [formGroup]="tournamentForm"
-      (ngSubmit)="onSubmit()"
-      class="space-y-6"
-      autocomplete="off"
-    >
-      <div class="space-y-4">
-        <div>
-          <label
-            for="name"
-            class="block text-sm font-medium text-[color:var(--color-text-primary)]"
-            >Tournament Name</label
-          >
-          <input
-            type="text"
-            id="name"
-            formControlName="name"
-            class="gh-input mt-1"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="false"
-            [ngClass]="{
-              'border-red-500':
-                tournamentForm.get('name')?.invalid &&
-                tournamentForm.get('name')?.touched,
-            }"
-          />
-          @if (
-            tournamentForm.get("name")?.invalid &&
-            tournamentForm.get("name")?.touched
-          ) {
-            <div class="text-red-500 text-sm mt-1">
-              Tournament name is required
-            </div>
-          }
-        </div>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Date</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        formControlName="date"
+        required
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
 
-        <div>
-          <label
-            for="date"
-            class="block text-sm font-medium text-[color:var(--color-text-primary)]"
-          >
-            Date
-          </label>
-          <input
-            type="date"
-            id="date"
-            formControlName="date"
-            class="gh-input mt-1"
-            autocomplete="off"
-            [ngClass]="{
-              'border-red-500':
-                tournamentForm.get('date')?.invalid &&
-                tournamentForm.get('date')?.touched,
-            }"
-          />
-          @if (
-            tournamentForm.get("date")?.invalid &&
-            tournamentForm.get("date")?.touched
-          ) {
-            <div class="text-red-500 text-sm mt-1">Date is required</div>
-          }
-        </div>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="4"></textarea>
+    </mat-form-field>
 
-        <div>
-          <label
-            for="description"
-            class="block text-sm font-medium text-[color:var(--color-text-primary)]"
-            >Description</label
-          >
-          <textarea
-            id="description"
-            formControlName="description"
-            rows="4"
-            class="gh-input mt-1"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="false"
-          ></textarea>
-          @if (
-            tournamentForm.get("description")?.invalid &&
-            tournamentForm.get("description")?.touched
-          ) {
-            <div class="text-red-500 text-sm mt-1">Description is required</div>
-          }
-        </div>
-
-        <div>
-          <label
-            for="description"
-            class="block text-sm font-medium text-[color:var(--color-text-primary)]"
-            >Description</label
-          >
-          <textarea
-            id="description"
-            formControlName="description"
-            rows="4"
-            class="gh-input mt-1"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="false"
-          ></textarea>
-          <p class="mt-1 text-sm text-[color:var(--color-text-secondary)]">
-            Optional: Add any additional information about the tournament
-          </p>
-        </div>
-      </div>
-
-      <div class="flex gap-4">
-        <button
-          type="submit"
-          class="gh-button-primary"
-          [disabled]="tournamentForm.invalid"
-        >
-          {{ isEditing ? "Update Tournament" : "Create Tournament" }}
-        </button>
-        <button
-          type="button"
-          class="gh-button-secondary"
-          routerLink="/tournaments"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
-  </div>
+    <div class="button-row">
+      <button mat-button type="button" (click)="goBack()">Cancel</button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!tournamentForm.valid"
+      >
+        {{ isEditing ? "Save" : "Create" }}
+      </button>
+    </div>
+  </form>
 </div>
