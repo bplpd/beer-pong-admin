@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   fill="none"
+   version="1.1"
+   id="svg3"
+   sodipodi:docname="beer-pong-icon.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs3">
+    <!-- Add radial gradient for bubbles -->
+    <radialGradient id="bubbleGradient" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="white" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0.3"/>
+    </radialGradient>
+  </defs>
+  <sodipodi:namedview
+     id="namedview3"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="34.383067"
+     inkscape:cx="15.283686"
+     inkscape:cy="9.8885885"
+     inkscape:window-width="2558"
+     inkscape:window-height="1360"
+     inkscape:window-x="1273"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg3" />
+  <!-- Red Solo Cup -->
+  <!-- Cup Highlight -->
+  <path
+     d="m 10.004372,6.0778596 1.289329,13.0193814 h 5.157318 l 1.28933,-13.0193814 z"
+     fill="#f28e1c"
+     stroke="#ffffff"
+     stroke-width="1.08641"
+     id="path1-4" />
+  <!-- Bubbles for first cup -->
+  <circle cx="11.5" cy="10" r="0.4" fill="url(#bubbleGradient)" opacity="0.6">
+    <animate attributeName="cy" from="12" to="8" dur="3s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="12.5" cy="11" r="0.3" fill="url(#bubbleGradient)" opacity="0.5">
+    <animate attributeName="cy" from="13" to="9" dur="2.5s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="13.2" cy="9.5" r="0.25" fill="url(#bubbleGradient)" opacity="0.4">
+    <animate attributeName="cy" from="11.5" to="7.5" dur="3.5s" repeatCount="indefinite" />
+  </circle>
+  
+  <path
+     d="m 15.420228,8.7560579 1.289329,13.0193811 h 5.157318 l 1.28933,-13.0193811 z"
+     fill="#f28e1c"
+     stroke="#ffffff"
+     stroke-width="1.08641"
+     id="path1-4-8" />
+  <!-- Bubbles for second cup -->
+  <circle cx="16.8" cy="12.5" r="0.4" fill="url(#bubbleGradient)" opacity="0.6">
+    <animate attributeName="cy" from="14.5" to="10.5" dur="2.8s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="17.8" cy="13.5" r="0.3" fill="url(#bubbleGradient)" opacity="0.5">
+    <animate attributeName="cy" from="15.5" to="11.5" dur="3.2s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="18.5" cy="12" r="0.25" fill="url(#bubbleGradient)" opacity="0.4">
+    <animate attributeName="cy" from="14" to="10" dur="3.7s" repeatCount="indefinite" />
+  </circle>
+  
+  <path
+     d="M 4.6317637,8.8506578 5.9210942,21.870039 h 5.1573168 l 1.28933,-13.0193812 z"
+     fill="#f28e1c"
+     stroke="#ffffff"
+     stroke-width="1.08641"
+     id="path1" />
+  <!-- Bubbles for third cup -->
+  <circle cx="6" cy="12.5" r="0.4" fill="url(#bubbleGradient)" opacity="0.6">
+    <animate attributeName="cy" from="14.5" to="10.5" dur="3.3s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="7" cy="13.5" r="0.3" fill="url(#bubbleGradient)" opacity="0.5">
+    <animate attributeName="cy" from="15.5" to="11.5" dur="2.7s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="7.7" cy="12" r="0.25" fill="url(#bubbleGradient)" opacity="0.4">
+    <animate attributeName="cy" from="14" to="10" dur="3.1s" repeatCount="indefinite" />
+  </circle>
+  
+  <path
+     d="M 5.4322417,10.509084 6.4657062,20.26978"
+     stroke="#ffffff"
+     stroke-width="0.374301"
+     opacity="0.5"
+     id="path2" />
+  <path
+     d="m 16.202176,10.230095 1.033465,9.760696"
+     stroke="#ffffff"
+     stroke-width="0.374301"
+     opacity="0.5"
+     id="path2-0" />
+  <!-- Ping Pong Ball -->
+  <circle
+     cx="2.2567666"
+     cy="4.7498345"
+     r="2"
+     fill="#ffffff"
+     id="circle2" />
+  <!-- Ball Motion Lines -->
+  <path
+     d="M 4.7133425,2.3072727 C 7.3019481,-0.3050792 10.03761,0.1440371 11.28323,3.1082741"
+     stroke="#ffffff"
+     stroke-width="0.75"
+     stroke-linecap="round"
+     opacity="0.6"
+     id="path3"
+     sodipodi:nodetypes="cc" />
+  <path
+     d="m 9.578588,3.2673453 c 2.10362,1.7091022 3.19687,0.7919747 2.585367,-1.3803048"
+     stroke="#ffffff"
+     stroke-width="0.75"
+     stroke-linecap="round"
+     opacity="0.6"
+     id="path3-0"
+     sodipodi:nodetypes="cc" />
+</svg>

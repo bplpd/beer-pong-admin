@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   fill="none"
+   version="1.1"
+   id="svg3"
+   sodipodi:docname="beer-pong-icon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs3" />
+  <sodipodi:namedview
+     id="namedview3"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
+  <!-- Red Solo Cup -->
+  <path
+     d="m 6,4 2,16 h 8 L 18,4 Z"
+     fill="#f28e1c"
+     stroke="#ffffff"
+     stroke-width="1.5"
+     id="path1"
+     style="display:none" />
+  <!-- Cup Highlight -->
+  <path
+     d="M 7,6 8.5,18"
+     stroke="#ffffff"
+     stroke-width="0.5"
+     opacity="0.5"
+     id="path2"
+     style="display:none" />
+  <!-- Ping Pong Ball -->
+  <circle
+     cx="2"
+     cy="2"
+     r="2"
+     fill="#ffffff"
+     id="circle2"
+     style="display:none" />
+  <!-- Ball Motion Lines -->
+  <path
+     d="m 9.5321337,5.6606684 c 2.0000003,1 3.0000003,2 3.0000003,4"
+     stroke="#ffffff"
+     stroke-width="0.75"
+     stroke-linecap="round"
+     opacity="0.6"
+     id="path3"
+     style="display:none" />
+</svg>

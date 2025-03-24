@@ -1,1 +1,267 @@
 /* You can add global styles to this file, and also import other style files */
+/* GitHub-inspired styles */
+@use "tailwindcss";
+@use "@angular/material" as mat;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind screens;
+
+/* Material Theme */
+@include mat.core();
+
+$primary-palette: (
+  50: #e8f5e9,
+  100: #c8e6c9,
+  200: #a5d6a7,
+  300: #81c784,
+  400: #66bb6a,
+  500: #4caf50,
+  600: #43a047,
+  700: #388e3c,
+  800: #2e7d32,
+  900: #1b5e20,
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  ),
+);
+
+$beer-pong-primary: mat.m2-define-palette($primary-palette);
+$beer-pong-accent: mat.m2-define-palette(mat.$m2-amber-palette);
+$beer-pong-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+$beer-pong-theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $beer-pong-primary,
+      accent: $beer-pong-accent,
+      warn: $beer-pong-warn,
+    ),
+  )
+);
+
+@include mat.all-component-themes($beer-pong-theme);
+
+:root {
+  /* GitHub theme colors */
+  --color-canvas-default: #ffffff;
+  --color-canvas-subtle: #f6f8fa;
+  --color-border-primary: #d0d7de;
+
+  /* Header colors */
+  --color-header-bg: #24292f;
+  --color-header-text: #ffffff;
+  --color-header-text-secondary: #7d8590;
+
+  /* Text colors */
+  --color-text-primary: #1f2328;
+  --color-text-secondary: #656d76;
+  --color-text-tertiary: #7d8590;
+
+  /* Button colors */
+  --color-btn-primary-bg: #2da44e;
+  --color-btn-primary-hover-bg: #2c974b;
+  --color-btn-primary-text: #ffffff;
+
+  --color-btn-secondary-bg: #f6f8fa;
+  --color-btn-secondary-hover-bg: #f3f4f6;
+  --color-btn-secondary-text: #24292f;
+  --color-btn-secondary-border: #1b1f2426;
+
+  /* Card colors */
+  --color-card-bg: #ffffff;
+  --color-card-border: #d0d7de;
+
+  /* Material Theme */
+  --color-text-primary: #24292e;
+  --color-text-secondary: #586069;
+  --color-border: #e1e4e8;
+  --color-bg-canvas: #ffffff;
+  --color-bg-secondary: #fafbfc;
+  --color-bg-tertiary: #f6f8fa;
+  --color-btn-primary-bg: #2ea44f;
+  --color-btn-primary-text: #ffffff;
+  --color-btn-primary-border: rgba(27, 31, 35, 0.15);
+  --color-btn-primary-shadow: 0 1px 0 rgba(27, 31, 35, 0.1);
+  --color-btn-primary-hover-bg: #2c974b;
+  --color-btn-primary-hover-border: rgba(27, 31, 35, 0.15);
+  --color-btn-primary-selected-bg: #2a8f47;
+  --color-btn-primary-disabled-bg: #94d3a2;
+  --color-btn-primary-disabled-text: rgba(255, 255, 255, 0.8);
+}
+
+@layer base {
+  body {
+    @apply bg-[color:var(--color-canvas-default)] text-[color:var(--color-text-primary)];
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Helvetica, Arial, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold mb-4;
+  }
+}
+
+@layer components {
+  .gh-header {
+    @apply bg-[color:var(--color-header-bg)] text-[color:var(--color-header-text)] px-4 py-3 flex items-center;
+  }
+
+  .gh-container {
+    @apply max-w-[1280px] mx-auto px-4 py-6;
+  }
+
+  .gh-button-primary {
+    @apply px-4 py-2 text-sm font-medium rounded-md;
+    background-color: var(--color-btn-primary-bg);
+    color: var(--color-btn-primary-text);
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-btn-primary-hover-bg);
+    }
+
+    &:disabled {
+      @apply opacity-50 cursor-not-allowed;
+    }
+  }
+
+  .gh-button-secondary {
+    @apply px-4 py-2 text-sm font-medium rounded-md border;
+    background-color: var(--color-btn-secondary-bg);
+    color: var(--color-btn-secondary-text);
+    border-color: var(--color-btn-secondary-border);
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-btn-secondary-hover-bg);
+    }
+
+    &:disabled {
+      @apply opacity-50 cursor-not-allowed;
+    }
+  }
+
+  .gh-card {
+    @apply p-6 rounded-lg mb-6;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-card-border);
+  }
+
+  .gh-input {
+    @apply w-full px-3 py-2 text-sm rounded-md border;
+    border-color: var(--color-border-primary);
+    background-color: var(--color-canvas-default);
+    color: var(--color-text-primary);
+
+    &:focus {
+      @apply outline-none ring-2 ring-blue-500 border-transparent;
+    }
+
+    &:disabled {
+      @apply bg-gray-50 cursor-not-allowed;
+    }
+  }
+
+  .gh-table {
+    @apply w-full text-sm;
+
+    th {
+      @apply px-4 py-2 text-left font-medium;
+      color: var(--color-text-secondary);
+      background-color: var(--color-canvas-subtle);
+      border-bottom: 1px solid var(--color-border-primary);
+    }
+
+    td {
+      @apply px-4 py-2 border-b;
+      border-color: var(--color-border-primary);
+    }
+
+    tr:hover {
+      background-color: var(--color-canvas-subtle);
+    }
+  }
+
+  .gh-link {
+    @apply text-[color:var(--color-link)] hover:underline;
+  }
+
+  /* Material Theme */
+  .gh-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+  }
+
+  .gh-card {
+    @apply bg-white rounded-lg border border-[color:var(--color-border)] p-6;
+  }
+
+  .gh-button-primary {
+    @apply inline-flex items-center px-4 py-2 text-sm font-medium rounded-md 
+           text-white bg-[color:var(--color-btn-primary-bg)] 
+           border border-[color:var(--color-btn-primary-border)]
+           hover:bg-[color:var(--color-btn-primary-hover-bg)]
+           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
+           disabled:bg-[color:var(--color-btn-primary-disabled-bg)]
+           disabled:text-[color:var(--color-btn-primary-disabled-text)]
+           disabled:cursor-not-allowed;
+  }
+
+  .gh-button-secondary {
+    @apply inline-flex items-center px-4 py-2 text-sm font-medium rounded-md
+           text-[color:var(--color-text-primary)] bg-white
+           border border-[color:var(--color-border)]
+           hover:bg-[color:var(--color-bg-tertiary)]
+           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500;
+  }
+
+  .gh-table {
+    @apply min-w-full divide-y divide-[color:var(--color-border)];
+  }
+
+  .gh-table th {
+    @apply px-6 py-3 text-left text-xs font-medium text-[color:var(--color-text-secondary)] uppercase tracking-wider bg-[color:var(--color-bg-tertiary)];
+  }
+
+  .gh-table td {
+    @apply px-6 py-4 whitespace-nowrap text-sm text-[color:var(--color-text-primary)];
+  }
+
+  .gh-table tr {
+    @apply bg-white;
+  }
+
+  .gh-table tr:nth-child(even) {
+    @apply bg-[color:var(--color-bg-secondary)];
+  }
+
+  .gh-input {
+    @apply block w-full px-3 py-2 text-base
+           border border-[color:var(--color-border)] rounded-md
+           focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500
+           disabled:bg-[color:var(--color-bg-secondary)]
+           disabled:cursor-not-allowed;
+  }
+
+  .mat-mdc-dialog-container {
+    --mdc-dialog-container-color: var(--color-bg-canvas);
+    --mdc-dialog-with-divider-divider-color: var(--color-border);
+  }
+
+  .mat-mdc-form-field {
+    width: 100%;
+  }
+}
