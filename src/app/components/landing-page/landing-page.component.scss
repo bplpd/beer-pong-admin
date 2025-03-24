@@ -1,12 +1,12 @@
-// GitHub Theme Colors
-$bg-primary: #0d1117;
-$bg-secondary: #161b22;
-$text-primary: #c9d1d9;
-$text-secondary: #8b949e;
-$accent-blue: #58a6ff;
-$accent-green: #238636;
-$border-color: #30363d;
-$hover-bg: #1f2428;
+// Light Theme Colors
+$bg-primary: #ffffff;
+$bg-secondary: #f6f8fa;
+$text-primary: #24292f;
+$text-secondary: #57606a;
+$accent-blue: #0969da;
+$accent-green: #2da44e;
+$border-color: #d0d7de;
+$hover-bg: #f3f4f6;
 
 .landing-container {
   min-height: 100vh;
@@ -29,7 +29,7 @@ $hover-bg: #1f2428;
     right: 0;
     bottom: 0;
     background: 
-      radial-gradient(circle at 50% 50%, rgba(88, 166, 255, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(9, 105, 218, 0.05) 0%, transparent 50%),
       url('/assets/images/beerpong-bg.jpg') center/cover;
     opacity: 0.1;
     z-index: 0;
@@ -48,7 +48,7 @@ $hover-bg: #1f2428;
   font-size: 3rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  background: linear-gradient(90deg, $accent-blue, #88d1ff);
+  background: linear-gradient(90deg, $accent-blue, #2188ff);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -78,7 +78,7 @@ $hover-bg: #1f2428;
   border-radius: 6px;
   background: $accent-green;
   color: #ffffff;
-  border: 1px solid rgba(240, 246, 252, 0.1);
+  border: 1px solid rgba(27, 31, 36, 0.15);
   cursor: pointer;
   transition: all 0.2s ease;
 
@@ -112,7 +112,7 @@ $hover-bg: #1f2428;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
     border-color: $accent-blue;
   }
 
@@ -169,7 +169,7 @@ $hover-bg: #1f2428;
     &:hover {
       transform: translateY(-2px);
       border-color: $accent-blue;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(140, 149, 159, 0.1);
     }
 
     h3 {
