@@ -17,9 +17,9 @@ import {
   Tournament,
   Match,
   Team,
-} from '../../services/tournament.service';
-import { TeamDialogComponent } from '../team-dialog/team-dialog.component';
+} from '../../../services/tournament.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { TeamDialogComponent } from './team-dialog/team-dialog.component';
 
 @Component({
   selector: 'app-tournament-detail',
@@ -38,7 +38,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatInputModule,
     MatCheckboxModule,
     MatIconModule,
-    TeamDialogComponent
+    TeamDialogComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './tournament-detail.component.html',
@@ -52,7 +52,7 @@ export class TournamentDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private tournamentService: TournamentService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -92,26 +92,27 @@ export class TournamentDetailComponent implements OnInit {
   }
 
   getGroupMatches(): Match[] {
-    return this.tournament?.matches.filter(m => m.phase === 'group') || [];
+    return this.tournament?.matches.filter((m) => m.phase === 'group') || [];
   }
 
   getKnockoutMatches(): Match[] {
-    return this.tournament?.matches.filter(m => m.phase === 'knockout') || [];
+    return this.tournament?.matches.filter((m) => m.phase === 'knockout') || [];
   }
 
   getKnockoutRounds(): { round: number; matches: Match[] }[] {
     const knockoutMatches = this.getKnockoutMatches();
     const rounds: { round: number; matches: Match[] }[] = [];
-    
+
     if (knockoutMatches.length === 0) return rounds;
 
-    const maxRound = Math.max(...knockoutMatches.map(m => m.round || 0));
-    
+    const maxRound = Math.max(...knockoutMatches.map((m) => m.round || 0));
+
     for (let round = 1; round <= maxRound; round++) {
       rounds.push({
         round,
-        matches: knockoutMatches.filter(m => m.round === round)
-          .sort((a, b) => (a.matchNumber || 0) - (b.matchNumber || 0))
+        matches: knockoutMatches
+          .filter((m) => m.round === round)
+          .sort((a, b) => (a.matchNumber || 0) - (b.matchNumber || 0)),
       });
     }
 
@@ -122,28 +123,35 @@ export class TournamentDetailComponent implements OnInit {
     const roundNames = {
       1: 'Quarter-finals',
       2: 'Semi-finals',
-      3: 'Final'
+      3: 'Final',
     };
     return roundNames[round as keyof typeof roundNames] || `Round ${round}`;
   }
 
   getTeamName(teamId: string): string {
-    return this.tournament?.teams.find(t => t.id === teamId)?.name || 'TBD';
+    return this.tournament?.teams.find((t) => t.id === teamId)?.name || 'TBD';
   }
 
   updateMatchScore(match: Match, team1Score: number, team2Score: number): void {
     if (!this.tournament) return;
-    this.tournamentService.updateMatchScore(this.tournament, match, team1Score, team2Score);
+    this.tournamentService.updateMatchScore(
+      this.tournament,
+      match,
+      team1Score,
+      team2Score,
+    );
   }
 
   canStartKnockoutPhase(): boolean {
     if (!this.tournament) return false;
-    
+
     // Check if all group matches are completed
     const groupMatches = this.getGroupMatches();
-    return groupMatches.length > 0 && 
-           groupMatches.every(m => m.completed) &&
-           this.tournament.currentPhase === 'group';
+    return (
+      groupMatches.length > 0 &&
+      groupMatches.every((m) => m.completed) &&
+      this.tournament.currentPhase === 'group'
+    );
   }
 
   addTeam(): void {
@@ -154,21 +162,23 @@ export class TournamentDetailComponent implements OnInit {
       data: {},
     });
 
-    dialogRef.afterClosed().subscribe((result: { name: string; players: string[] }) => {
-      if (result && this.tournament) {
-        const newTeam: Team = {
-          id: crypto.randomUUID(),
-          name: result.name,
-          players: result.players,
-          groupPoints: 0,
-          groupWins: 0,
-          groupLosses: 0
-        };
+    dialogRef
+      .afterClosed()
+      .subscribe((result: { name: string; players: string[] }) => {
+        if (result && this.tournament) {
+          const newTeam: Team = {
+            id: crypto.randomUUID(),
+            name: result.name,
+            players: result.players,
+            groupPoints: 0,
+            groupWins: 0,
+            groupLosses: 0,
+          };
 
-        this.tournament.teams.push(newTeam);
-        this.tournamentService.updateTournament(this.tournament);
-      }
-    });
+          this.tournament.teams.push(newTeam);
+          this.tournamentService.updateTournament(this.tournament);
+        }
+      });
   }
 
   removeTeam(team: Team): void {
@@ -185,7 +195,7 @@ export class TournamentDetailComponent implements OnInit {
     if (!this.tournament) return '0-0';
 
     const matches = this.tournament.matches.filter(
-      (m) => m.team1Id === team.id || m.team2Id === team.id
+      (m) => m.team1Id === team.id || m.team2Id === team.id,
     );
 
     const wins = matches.filter((m) => {
@@ -217,7 +227,7 @@ export class TournamentDetailComponent implements OnInit {
           team1Score: 0,
           team2Score: 0,
           completed: false,
-          phase: 'group'
+          phase: 'group',
         });
       }
     }
@@ -228,39 +238,50 @@ export class TournamentDetailComponent implements OnInit {
   }
 
   updateScore(event: Event, match: Match, team: 'team1' | 'team2'): void {
-    const value = Math.max(0, parseInt((event.target as HTMLInputElement).value) || 0);
+    const value = Math.max(
+      0,
+      parseInt((event.target as HTMLInputElement).value) || 0,
+    );
     const updatedMatch = {
       ...match,
-      [team === 'team1' ? 'team1Score' : 'team2Score']: value
+      [team === 'team1' ? 'team1Score' : 'team2Score']: value,
     };
 
     const updatedTournament: Tournament = {
       ...this.tournament!,
-      matches: this.tournament!.matches.map(m =>
-        m.team1Id === match.team1Id && m.team2Id === match.team2Id ? updatedMatch : m
-      )
+      matches: this.tournament!.matches.map((m) =>
+        m.team1Id === match.team1Id && m.team2Id === match.team2Id
+          ? updatedMatch
+          : m,
+      ),
     };
 
     this.tournamentService.updateTournament(updatedTournament);
     this.tournament = updatedTournament;
   }
 
-  incrementScore(match: Match, team: 'team1' | 'team2', increment: number): void {
+  incrementScore(
+    match: Match,
+    team: 'team1' | 'team2',
+    increment: number,
+  ): void {
     if (!this.tournament) return;
-    
+
     const currentScore = team === 'team1' ? match.team1Score : match.team2Score;
     const newScore = Math.max(0, currentScore + increment);
-    
+
     const updatedMatch = {
       ...match,
-      [team === 'team1' ? 'team1Score' : 'team2Score']: newScore
+      [team === 'team1' ? 'team1Score' : 'team2Score']: newScore,
     };
 
     const updatedTournament: Tournament = {
       ...this.tournament,
-      matches: this.tournament.matches.map(m =>
-        m.team1Id === match.team1Id && m.team2Id === match.team2Id ? updatedMatch : m
-      )
+      matches: this.tournament.matches.map((m) =>
+        m.team1Id === match.team1Id && m.team2Id === match.team2Id
+          ? updatedMatch
+          : m,
+      ),
     };
 
     this.tournamentService.updateTournament(updatedTournament);
@@ -277,9 +298,9 @@ export class TournamentDetailComponent implements OnInit {
 
     const updatedTournament = {
       ...this.tournament,
-      matches: this.tournament.matches.map(m => 
-        m.id === match.id ? updatedMatch : m
-      )
+      matches: this.tournament.matches.map((m) =>
+        m.id === match.id ? updatedMatch : m,
+      ),
     };
 
     this.tournamentService.updateTournament(updatedTournament);
@@ -295,7 +316,7 @@ export class TournamentDetailComponent implements OnInit {
 
     if (
       confirm(
-        'Are you sure you want to delete this tournament? This action cannot be undone.'
+        'Are you sure you want to delete this tournament? This action cannot be undone.',
       )
     ) {
       this.tournamentService.deleteTournament(this.tournament.id);
@@ -316,7 +337,7 @@ export class TournamentDetailComponent implements OnInit {
         const updatedTournament: Tournament = {
           ...this.tournament!,
           teams: this.tournament!.teams.map((t) =>
-            t.id === team.id ? updatedTeam : t
+            t.id === team.id ? updatedTeam : t,
           ),
         };
 

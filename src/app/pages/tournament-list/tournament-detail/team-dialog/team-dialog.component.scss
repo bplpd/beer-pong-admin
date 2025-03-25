@@ -1,0 +1,44 @@
+.full-width {
+  width: 100%;
+}
+
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.player-input {
+  flex: 1;
+}
+
+.add-player-btn {
+  margin-top: 8px;
+}
+
+h3 {
+  margin: 16px 0 8px;
+}
+
+.dice-animation {
+  animation: diceRoll 0.5s ease-in-out;
+}
+
+@keyframes diceRoll {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-6px) rotate(90deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(180deg);
+  }
+  75% {
+    transform: translateY(-6px) rotate(270deg);
+  }
+  100% {
+    transform: translateY(0) rotate(360deg);
+  }
+}

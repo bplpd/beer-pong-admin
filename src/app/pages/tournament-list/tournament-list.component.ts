@@ -6,7 +6,7 @@ import {
   TournamentService,
   Tournament,
 } from '../../services/tournament.service';
-import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-tournament-list',

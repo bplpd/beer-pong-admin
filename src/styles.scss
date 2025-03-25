@@ -58,8 +58,8 @@ $beer-pong-theme: mat.m2-define-light-theme(
   --color-border-primary: #d0d7de;
 
   /* Header colors */
-  --color-header-bg: #24292f;
-  --color-header-text: #ffffff;
+  --color-header-bg: #ffffff;
+  --color-header-text: #24292f;
   --color-header-text-secondary: #7d8590;
 
   /* Text colors */
@@ -103,8 +103,9 @@ $beer-pong-theme: mat.m2-define-light-theme(
   body {
     @apply bg-[color:var(--color-canvas-default)] text-[color:var(--color-text-primary)];
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      Helvetica, Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+      sans-serif;
   }
 
   h1,

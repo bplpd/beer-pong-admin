@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
-import { TournamentListComponent } from './components/tournament-list/tournament-list.component';
-import { TournamentFormComponent } from './components/tournament-form/tournament-form.component';
-import { TournamentDetailComponent } from './components/tournament-detail/tournament-detail.component';
-import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
-import { LandingPageComponent } from './components/landing-page/landing-page.component';
+
+import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
+import { LandingPageComponent } from './pages/landing-page/landing-page.component';
+import { TournamentListComponent } from './pages/tournament-list/tournament-list.component';
+import { TournamentFormComponent } from './pages/tournament-list/tournament-form/tournament-form.component';
+import { TournamentDetailComponent } from './pages/tournament-list/tournament-detail/tournament-detail.component';
 
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },

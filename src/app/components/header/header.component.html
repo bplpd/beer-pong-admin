@@ -1,0 +1,71 @@
+<header
+  class="bg-[color:var(--color-header-bg)] border-b border-[color:var(--color-border-primary)]"
+>
+  <div
+    class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center"
+  >
+    <div class="flex items-center gap-2 justify-center">
+      <img
+        src="/assets/img/beer-pong-icon.svg"
+        alt="Beer Pong"
+        class="w-8 h-8"
+      />
+      <h1
+        class="text-xl font-semibold text-[color:var(--color-header-text)] mb-0 hover:bg-"
+        [routerLink]="['/']"
+      >
+        Beer Pong Tournaments
+      </h1>
+    </div>
+    <nav class="flex gap-3">
+      <button
+        [routerLink]="'/'"
+        class="px-3 py-1.5 text-sm font-medium rounded-md bg-transparent text-black hover:bg-black/10 transition-colors flex items-center gap-2"
+      >
+        <mat-icon>rules</mat-icon>
+        Rules
+      </button>
+      <button
+        routerLink="/tournaments"
+        class="px-3 py-1.5 text-sm font-medium rounded-md bg-transparent text-black hover:bg-black/10 transition-colors flex items-center gap-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 10h16M4 14h16M4 18h16"
+          />
+        </svg>
+        List Tournaments
+      </button>
+
+      <button
+        [routerLink]="['/tournament/new']"
+        class="px-3 py-1.5 text-sm font-medium rounded-md bg-green-600 text-white hover:bg-green-500 transition-colors flex items-center gap-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4v16m8-8H4"
+          />
+        </svg>
+        Create Tournament
+      </button>
+    </nav>
+  </div>
+</header>

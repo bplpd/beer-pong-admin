@@ -1,24 +1,23 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import {
+  FormBuilder,
+  FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  FormGroup,
-  FormBuilder,
   Validators,
 } from '@angular/forms';
-import { RouterModule, Router, ActivatedRoute } from '@angular/router';
-import {
-  TournamentService,
-  Tournament,
-} from '../../services/tournament.service';
+import { MatButtonModule } from '@angular/material/button';
+import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
-import { map } from 'rxjs/operators';
-import { firstValueFrom } from 'rxjs';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import {
+  Tournament,
+  TournamentService,
+} from '../../../services/tournament.service';
+import { UniqueNameService } from '../../../services/uniqueName/uniqueName.service';
 
 @Component({
   selector: 'app-tournament-form',
@@ -35,99 +34,14 @@ import { firstValueFrom } from 'rxjs';
     MatNativeDateModule,
   ],
   templateUrl: './tournament-form.component.html',
-  styles: [
-    `
-      .container {
-        max-width: 600px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-      }
-      .full-width {
-        width: 100%;
-        margin-bottom: 1rem;
-      }
-      .button-row {
-        display: flex;
-        justify-content: flex-end;
-        gap: 1rem;
-        margin-top: 2rem;
-      }
-      h2 {
-        margin-bottom: 2rem;
-        font-size: 1.5rem;
-        font-weight: 500;
-      }
-    `,
-  ],
+  styleUrl: './tournament-form.component.scss',
 })
 export class TournamentFormComponent implements OnInit {
+  //
+
   tournamentForm: FormGroup;
   isEditing = false;
   tournamentId?: string;
-
-  private readonly adjectives = [
-    'Happy',
-    'Brave',
-    'Mighty',
-    'Swift',
-    'Clever',
-    'Jolly',
-    'Fierce',
-    'Wise',
-    'Noble',
-    'Lucky',
-    'Proud',
-    'Wild',
-  ];
-
-  private readonly animals = [
-    'Horse',
-    'Lion',
-    'Tiger',
-    'Eagle',
-    'Bear',
-    'Wolf',
-    'Dolphin',
-    'Falcon',
-    'Panther',
-    'Dragon',
-    'Phoenix',
-    'Elephant',
-  ];
-
-  private async generateUniqueName(): Promise<string> {
-    const existingNames = await firstValueFrom(
-      this.tournamentService.getTournaments().pipe(
-        map((tournaments) => {
-          if (!tournaments || !tournaments.length) {
-            return new Set();
-          }
-          return new Set(tournaments.map((t) => t.name.toLowerCase()));
-        }),
-      ),
-    );
-
-    // Try to generate a unique name (max 100 attempts to prevent infinite loop)
-    let attempts = 0;
-    let name: string;
-
-    do {
-      const adjective =
-        this.adjectives[Math.floor(Math.random() * this.adjectives.length)];
-      const animal =
-        this.animals[Math.floor(Math.random() * this.animals.length)];
-      name = `${adjective} ${animal} - Tournament`;
-      attempts++;
-
-      // If we've tried all combinations, add a number to make it unique
-      if (attempts >= 100) {
-        name = `${name} ${Math.floor(Math.random() * 1000)}`;
-        break;
-      }
-    } while (existingNames?.has(name.toLowerCase()));
-
-    return name;
-  }
 
   constructor(
     private fb: FormBuilder,
@@ -135,6 +49,7 @@ export class TournamentFormComponent implements OnInit {
     private route: ActivatedRoute,
     private tournamentService: TournamentService,
     private dateAdapter: DateAdapter<any>,
+    private uniqueNameService: UniqueNameService,
   ) {
     this.tournamentForm = this.fb.group({
       name: ['', Validators.required],
@@ -151,7 +66,7 @@ export class TournamentFormComponent implements OnInit {
     // Set default name only for new tournaments
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
-      this.generateUniqueName().then((name) => {
+      this.uniqueNameService.generateUniqueTournamentName().then((name) => {
         this.tournamentForm.patchValue({
           name: name,
         });
