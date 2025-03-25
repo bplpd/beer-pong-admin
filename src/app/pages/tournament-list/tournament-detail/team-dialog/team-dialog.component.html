@@ -4,15 +4,23 @@
     <div class="flex items-center gap-2 mb-4">
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Team Name</mat-label>
-        <input matInput formControlName="name" required spellcheck="false" />
+        <div class="flex flex-row">
+          <input matInput formControlName="name" required spellcheck="false" />
+          <mat-icon
+            class="hover:opacity-100 opacity-50 active:bg-neutral-300 rounded"
+            (click)="deleteName()"
+          >
+            delete
+          </mat-icon>
+        </div>
       </mat-form-field>
       <button
         type="button"
         mat-icon-button
         color="primary"
-        (click)="patchRandomName()"
+        (click)="patchRandomName('name')"
         matTooltip="Generate random name"
-        [class.dice-animation]="isAnimating"
+        [class.dice-animation]="isAnimatingMap.get('name')"
       >
         <mat-icon>casino</mat-icon>
       </button>
@@ -22,12 +30,30 @@
       <h3>Players</h3>
       <div
         *ngFor="let player of players.controls; let i = index"
-        class="player-row"
+        class="player-row flex items-center gap-2 mb-4"
       >
-        <mat-form-field appearance="fill" class="player-input">
+        <mat-form-field appearance="fill" class="player-input full-width">
           <mat-label>Player {{ i + 1 }}</mat-label>
-          <input matInput [formControlName]="i" required />
+          <div class="flex flex-row">
+            <input matInput [formControlName]="i" required spellcheck="false" />
+            <mat-icon
+              class="hover:opacity-100 opacity-50 active:bg-neutral-300 rounded"
+              (click)="deletePlayerName(i)"
+            >
+              delete
+            </mat-icon>
+          </div>
         </mat-form-field>
+        <button
+          type="button"
+          mat-icon-button
+          color="primary"
+          (click)="patchRandomPlayerName(i, 'player' + i)"
+          matTooltip="Generate random name"
+          [class.dice-animation]="isAnimatingMap.get('player' + i)"
+        >
+          <mat-icon>casino</mat-icon>
+        </button>
       </div>
     </div>
   </mat-dialog-content>

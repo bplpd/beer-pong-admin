@@ -41,6 +41,8 @@ export class TeamDialogComponent {
   isEditing = false;
   isAnimating = false;
 
+  isAnimatingMap: Map<string, boolean> = new Map();
+
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<TeamDialogComponent>,
@@ -50,33 +52,37 @@ export class TeamDialogComponent {
     this.isEditing = !!data?.team;
     const name =
       data?.team?.name || this.uniqueNameService.generateRandomTeamName();
+
+    // Generate default player names if not editing
+    const defaultPlayers = data?.team?.players || [
+      this.uniqueNameService.generateRandomPlayerName(),
+      this.uniqueNameService.generateRandomPlayerName(),
+    ];
+
     this.teamForm = this.fb.group({
       name: [name],
-      players: this.fb.array(
-        data?.team?.players || ['', ''],
-        Validators.required,
-      ),
+      players: this.fb.array(defaultPlayers, Validators.required),
     });
   }
 
-  patchRandomName(): void {
-    if (this.isAnimating) return;
-    this.isAnimating = true;
+  patchRandomName(controlName: string): void {
+    if (this.isAnimatingMap.get(controlName)) return;
+    this.isAnimatingMap.set(controlName, true);
     const newName = this.uniqueNameService.generateRandomTeamName();
     this.teamForm.get('name')!.setValue(newName);
-    setTimeout(() => (this.isAnimating = false), 500);
+    setTimeout(() => this.isAnimatingMap.set(controlName, false), 500);
+  }
+
+  patchRandomPlayerName(index: number, controlName: string): void {
+    if (this.isAnimatingMap.get(controlName)) return;
+    this.isAnimatingMap.set(controlName, true);
+    const newName = this.uniqueNameService.generateRandomPlayerName();
+    this.players.at(index).setValue(newName);
+    setTimeout(() => this.isAnimatingMap.set(controlName, false), 500);
   }
 
   get players() {
     return this.teamForm.get('players') as FormArray;
-  }
-
-  addPlayer() {
-    this.players.push(this.fb.control('', Validators.required));
-  }
-
-  removePlayer(index: number) {
-    this.players.removeAt(index);
   }
 
   onSubmit() {
@@ -87,5 +93,13 @@ export class TeamDialogComponent {
 
   onCancel() {
     this.dialogRef.close();
+  }
+
+  deleteName() {
+    this.teamForm.get('name')!.setValue('');
+  }
+
+  deletePlayerName(index: number) {
+    this.players.at(index).setValue('');
   }
 }
