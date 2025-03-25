@@ -64,13 +64,13 @@
      stroke-width="1.08641"
      id="path1-4-8" />
   <!-- Bubbles for second cup -->
-  <circle cx="16.8" cy="12.5" r="0.4" fill="url(#bubbleGradient)" opacity="0.6">
+  <circle cx="16.8" cy="12.5" r="1" fill="url(#bubbleGradient)" opacity="0.6">
     <animate attributeName="cy" from="14.5" to="10.5" dur="2.8s" repeatCount="indefinite" />
   </circle>
-  <circle cx="17.8" cy="13.5" r="0.3" fill="url(#bubbleGradient)" opacity="0.5">
+  <circle cx="17.8" cy="13.5" r="0.9" fill="url(#bubbleGradient)" opacity="0.5">
     <animate attributeName="cy" from="15.5" to="11.5" dur="3.2s" repeatCount="indefinite" />
   </circle>
-  <circle cx="18.5" cy="12" r="0.25" fill="url(#bubbleGradient)" opacity="0.4">
+  <circle cx="18.5" cy="12" r="1.2" fill="url(#bubbleGradient)" opacity="0.4">
     <animate attributeName="cy" from="14" to="10" dur="3.7s" repeatCount="indefinite" />
   </circle>
   
@@ -81,13 +81,13 @@
      stroke-width="1.08641"
      id="path1" />
   <!-- Bubbles for third cup -->
-  <circle cx="6" cy="12.5" r="0.4" fill="url(#bubbleGradient)" opacity="0.6">
+  <circle cx="6" cy="12.5" r="1" fill="url(#bubbleGradient)" opacity="0.6">
     <animate attributeName="cy" from="14.5" to="10.5" dur="3.3s" repeatCount="indefinite" />
   </circle>
-  <circle cx="7" cy="13.5" r="0.3" fill="url(#bubbleGradient)" opacity="0.5">
+  <circle cx="7" cy="13.5" r="0.9" fill="url(#bubbleGradient)" opacity="0.5">
     <animate attributeName="cy" from="15.5" to="11.5" dur="2.7s" repeatCount="indefinite" />
   </circle>
-  <circle cx="7.7" cy="12" r="0.25" fill="url(#bubbleGradient)" opacity="0.4">
+  <circle cx="7.7" cy="12" r="1.2" fill="url(#bubbleGradient)" opacity="0.4">
     <animate attributeName="cy" from="14" to="10" dur="3.1s" repeatCount="indefinite" />
   </circle>
   
