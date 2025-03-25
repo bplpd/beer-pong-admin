@@ -1,15 +1,15 @@
-import { Component } from '@angular/core';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import {
-  trigger,
-  transition,
-  style,
-  animate,
-  state,
-} from '@angular/animations';
 
 @Component({
   selector: 'app-landing-page',
@@ -147,6 +147,6 @@ export class LandingPageComponent {
   constructor(private router: Router) {}
 
   navigateToTournaments() {
-    this.router.navigate(['/tournaments']);
+    this.router.navigate(['/tournament/new']);
   }
 }
