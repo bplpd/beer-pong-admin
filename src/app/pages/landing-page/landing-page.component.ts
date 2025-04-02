@@ -118,7 +118,7 @@ export class LandingPageComponent {
         'Derived from basketball, you can earn a chance for a second throw attempt here. If the ball rolls back over the table into your half of the court after your throw, you can grab it and throw it again. However, the ball must not touch the ground beforehand! The only important thing is that the second attempt must be a "trick shot". This means you have to incorporate a trick into the shot. Let your imagination run wild and wow the fans (e.g. against a wall, behind your back, between your legs, backwards, etc.)',
     },
     {
-      icon: '',
+      icon: 'blow',
       title: 'Blowout',
       description:
         'If the opponent hits one of your cups, it may still be spinning in the cup. As long as this is the case, you can blow into the cup to get the ball out again and thus prevent the cup from spinning. Caution: If the ball touches the beer in the cup just once, it is immediately lost and can no longer be blown.',

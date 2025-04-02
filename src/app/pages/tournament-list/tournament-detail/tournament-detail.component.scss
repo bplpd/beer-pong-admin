@@ -1,89 +1,154 @@
 .tournament-detail {
-  padding: 20px;
+  padding: 2rem;
 
   .tournament-header {
-    margin-bottom: 20px;
+    margin-bottom: 2rem;
 
     h1 {
-      margin-bottom: 10px;
+      margin-bottom: 1rem;
     }
 
     .tournament-meta {
       display: flex;
-      gap: 20px;
+      gap: 2rem;
+      margin-bottom: 1rem;
       color: rgba(0, 0, 0, 0.6);
     }
 
     .description {
-      margin-top: 10px;
+      margin-top: 1rem;
       color: rgba(0, 0, 0, 0.8);
     }
   }
 
   .teams-container {
-    padding: 20px;
+    padding: 1rem;
 
     .teams-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 2rem;
+
+      .teams-header-left {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+
+        h2 {
+          margin: 0;
+        }
+
+        .group-controls {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          
+          .group-label {
+            color: rgba(0, 0, 0, 0.87);
+          }
+
+          .group-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            
+            .group-count {
+              min-width: 2rem;
+              text-align: center;
+              font-size: 1rem;
+              font-weight: 500;
+            }
+
+            button[mat-icon-button] {
+              &[disabled] {
+                opacity: 0.5;
+              }
+            }
+          }
+        }
+      }
     }
 
     .groups-container {
-      margin-bottom: 30px;
+      margin-bottom: 3rem;
 
       h3 {
-        margin-bottom: 15px;
-      }
-
-      table {
-        width: 100%;
+        margin-bottom: 1.5rem;
       }
     }
   }
 
   .matches-container {
-    padding: 20px;
+    padding: 1rem;
 
     .matches-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 2rem;
     }
 
     .group-matches {
       h3 {
-        margin-bottom: 15px;
+        margin-bottom: 1.5rem;
       }
 
       .match-card {
-        margin-bottom: 15px;
+        margin-bottom: 1.5rem;
       }
     }
 
     .knockout-bracket {
       display: flex;
-      gap: 40px;
+      gap: 4rem;
       overflow-x: auto;
-      padding: 20px 0;
+      padding: 2rem 0;
 
       .round {
-        min-width: 300px;
+        min-width: 30rem;
 
         h3 {
-          margin-bottom: 15px;
+          margin-bottom: 1.5rem;
           text-align: center;
         }
 
         .round-matches {
           display: flex;
           flex-direction: column;
-          gap: 20px;
+          gap: 2rem;
         }
       }
     }
+  }
+}
+
+.match-teams {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+
+  .vs {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .team {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+.match-scores {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  mat-form-field {
+    width: 8rem;
   }
 }
 
@@ -92,8 +157,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    font-size: 16px;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
 
     .vs {
       color: rgba(0, 0, 0, 0.6);
@@ -109,11 +174,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 15px;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
 
     mat-form-field {
-      width: 80px;
+      width: 5rem;
     }
   }
 
@@ -126,6 +191,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 200px;
+  height: 20rem;
   color: rgba(0, 0, 0, 0.6);
 }

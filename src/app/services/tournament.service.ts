@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, map, of } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
+
+export type TeamId = string;
 
 export interface Team {
-  id: string;
+  id: TeamId;
   name: string;
   players: string[];
   groupPoints?: number;
@@ -12,8 +14,8 @@ export interface Team {
 
 export interface Match {
   id: string;
-  team1Id: string;
-  team2Id: string;
+  team1Id: TeamId;
+  team2Id: TeamId;
   team1Score: number;
   team2Score: number;
   completed: boolean;
@@ -23,18 +25,24 @@ export interface Match {
   winnerId?: string;
 }
 
-export interface Tournament {
-  id: string;
-  name: string;
-  date: string;
-  description?: string;
-  status: 'pending' | 'group' | 'knockout' | 'completed';
-  teams: Team[];
-  matches: Match[];
-  currentPhase: 'group' | 'knockout';
-  teamsPerGroup?: number;
-  numberOfGroups?: number;
-  knockoutQualifiers?: number; // Number of teams that qualify from each group
+export class Tournament {
+  public teams: Map<TeamId, Team>;
+  public matches: Match[] = [];
+  public groups: TeamId[][] = [];
+  public status: 'group' | 'knockout' | 'completed' = 'group';
+  public currentPhase: 'group' | 'knockout' = 'group';
+  public teamsPerGroup: number = 4;
+  public numberOfGroups: number = 1;
+  public knockoutQualifiers: number = 2; // Number of teams that qualify from each group) {}
+
+  constructor(
+    public id: string,
+    public name: string,
+    public date: string,
+    public description?: string,
+  ) {
+    this.teams = new Map();
+  }
 }
 
 @Injectable({
@@ -51,19 +59,44 @@ export class TournamentService {
   private loadFromLocalStorage(): void {
     const stored = localStorage.getItem(this.STORAGE_KEY);
     if (stored) {
-      this.tournaments.next(JSON.parse(stored));
+      const parsed = JSON.parse(stored);
+
+      // Convert tournaments to proper Tournament instances with Map
+      const tournaments = parsed.map((t: any) => {
+        const tournament = new Tournament(t.id, t.name, t.date, t.description);
+        tournament.status = t.status;
+        tournament.currentPhase = t.currentPhase;
+        tournament.matches = t.matches || [];
+        tournament.groups = t.groups || [];
+        tournament.teamsPerGroup = t.teamsPerGroup;
+        tournament.numberOfGroups = t.numberOfGroups;
+        tournament.knockoutQualifiers = t.knockoutQualifiers;
+
+        // Convert teams array back to Map
+        if (Array.isArray(t.teams)) {
+          t.teams.forEach((team: Team) => {
+            tournament.teams.set(team.id, team);
+          });
+        }
+
+        return tournament;
+      });
+
+      this.tournaments.next(tournaments);
     }
   }
 
   private saveToLocalStorage(): void {
-    localStorage.setItem(
-      this.STORAGE_KEY,
-      JSON.stringify(this.tournaments.value),
-    );
+    const tournaments = this.tournaments.value.map((t) => ({
+      ...t,
+      teams: Array.from(t.teams.values()), // Convert Map to array of teams
+    }));
+
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(tournaments));
   }
 
   getTournaments(): Observable<Tournament[]> {
-    return this.tournaments.asObservable();
+    return this.tournaments;
   }
 
   getTournament(id: string): Observable<Tournament | undefined> {
@@ -86,125 +119,219 @@ export class TournamentService {
     this.saveToLocalStorage();
   }
 
+  addTeam(team: Team, tournamentId: string): void {
+    const tournament = this.tournaments.value.find(
+      (t) => t.id === tournamentId,
+    );
+    if (!tournament) return;
+
+    // Add the team
+    tournament.teams.set(team.id, team);
+    this.createGroups(tournament);
+
+    // Update the tournament
+    this.updateTournament(tournament);
+  }
+
+  removeTeam(teamId: string, tournamentId: string): void {
+    const tournament = this.tournaments.value.find(
+      (t) => t.id === tournamentId,
+    );
+    if (!tournament) return;
+
+    // Remove the team
+    tournament.teams.delete(teamId);
+    this.createGroups(tournament);
+
+    // Update the tournament
+    this.updateTournament(tournament);
+  }
+
+  generateGroupMatches(tournament: Tournament): void {
+    const matches: Match[] = [];
+    let matchNumber = 1;
+
+    const groups = tournament.groups;
+    for (const group of groups) {
+      // If odd number of teams, add a "bye" team
+      const teamsInRound = group.length % 2 === 0 ? group : [...group, null];
+      const numRounds = teamsInRound.length - 1;
+      const halfSize = teamsInRound.length / 2;
+
+      // Generate rounds using circle method
+      for (let round = 0; round < numRounds; round++) {
+        // Generate matches for this round
+        for (let i = 0; i < halfSize; i++) {
+          const team1 = teamsInRound[i];
+          const team2 = teamsInRound[teamsInRound.length - 1 - i];
+
+          // Skip if either team is the "bye" team
+          if (team1 !== null && team2 !== null) {
+            matches.push({
+              id: crypto.randomUUID(),
+              team1Id: team1,
+              team2Id: team2,
+              team1Score: 0,
+              team2Score: 0,
+              completed: false,
+              phase: 'group',
+              round: round + 1,
+              matchNumber: matchNumber++,
+            });
+          }
+        }
+
+        // Rotate teams for next round (keep first team fixed)
+        teamsInRound.splice(1, 0, teamsInRound.pop()!);
+      }
+    }
+
+    tournament.matches = matches;
+    tournament.status = 'group';
+    this.updateTournament(tournament);
+  }
+
+  createGroups(tournament: Tournament): void {
+    // Calculate optimal number of groups and teams per group
+    const totalTeams = tournament.teams.size;
+    let numberOfGroups: number;
+
+    // For 5 teams: 2 groups (3,2)
+    // For 6 teams: 2 groups (3,3)
+    // For 7 teams: 2 groups (4,3)
+    // For 8 teams: 2 groups (4,4)
+    // For 9 teams: 3 groups (3,3,3)
+    // For 10 teams: 3 groups (4,3,3)
+    // For 11 teams: 3 groups (4,4,3)
+    // For 12 teams: 3 groups (4,4,4)
+    if (totalTeams <= 4) {
+      numberOfGroups = 1;
+    } else if (totalTeams <= 8) {
+      numberOfGroups = 2;
+    } else if (totalTeams <= 12) {
+      numberOfGroups = 3;
+    } else {
+      numberOfGroups = 4;
+    }
+
+    tournament.numberOfGroups = numberOfGroups;
+    tournament.groups = Array.from({ length: numberOfGroups }, () => []);
+
+    // Get all team IDs and shuffle them
+    const teamIds = Array.from(tournament.teams.keys());
+    for (let i = teamIds.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [teamIds[i], teamIds[j]] = [teamIds[j], teamIds[i]];
+    }
+
+    // Distribute teams across groups using snake pattern
+    // For example, with 3 groups:
+    // Group 1: 1, 6, 7
+    // Group 2: 2, 5, 8
+    // Group 3: 3, 4, 9
+    let forward = true;
+    for (let i = 0; i < teamIds.length; i++) {
+      const groupIndex = forward
+        ? i % numberOfGroups
+        : numberOfGroups - 1 - (i % numberOfGroups);
+      tournament.groups[groupIndex].push(teamIds[i]);
+
+      // Reverse direction after completing each row
+      if ((i + 1) % numberOfGroups === 0) {
+        forward = !forward;
+      }
+    }
+
+    // Update the tournament
+    this.updateTournament(tournament);
+  }
+
   deleteTournament(id: string): void {
     this.tournaments.next(this.tournaments.value.filter((t) => t.id !== id));
     this.saveToLocalStorage();
   }
 
-  generateGroupMatches(tournament: Tournament): void {
-    if (!tournament.teams || tournament.teams.length < 4) return;
+  removeTeamFromTournament(tournamentId: string, teamId: string): void {
+    const tournament = this.tournaments.value.find(
+      (t) => t.id === tournamentId,
+    );
+    if (!tournament) return;
 
-    // Default to 4 teams per group if not specified
-    tournament.teamsPerGroup = tournament.teamsPerGroup || 4;
-    tournament.knockoutQualifiers = tournament.knockoutQualifiers || 2;
-
-    // Calculate number of groups
-    tournament.numberOfGroups = Math.ceil(
-      tournament.teams.length / tournament.teamsPerGroup,
+    // Remove the team
+    tournament.teams.delete(teamId);
+    tournament.matches = tournament.matches.filter(
+      (m) => m.team1Id !== teamId && m.team2Id !== teamId,
     );
 
-    // Reset team stats
-    tournament.teams.forEach((team) => {
-      team.groupPoints = 0;
-      team.groupWins = 0;
-      team.groupLosses = 0;
-    });
-
-    // Generate round-robin matches within each group
-    const matches: Match[] = [];
-    for (let g = 0; g < tournament.numberOfGroups; g++) {
-      const groupTeams = tournament.teams.slice(
-        g * tournament.teamsPerGroup,
-        (g + 1) * tournament.teamsPerGroup,
-      );
-
-      // Generate round-robin matches for this group
-      for (let i = 0; i < groupTeams.length; i++) {
-        for (let j = i + 1; j < groupTeams.length; j++) {
-          matches.push({
-            id: crypto.randomUUID(),
-            team1Id: groupTeams[i].id,
-            team2Id: groupTeams[j].id,
-            team1Score: 0,
-            team2Score: 0,
-            completed: false,
-            phase: 'group',
-          });
-        }
-      }
-    }
-
-    tournament.matches = matches;
-    tournament.currentPhase = 'group';
-    tournament.status = 'group';
+    // Update the tournament
     this.updateTournament(tournament);
   }
 
   generateKnockoutMatches(tournament: Tournament): void {
     if (!tournament.teams || !tournament.numberOfGroups) return;
 
-    // Get qualified teams from each group based on points
-    const qualifiedTeams: Team[] = [];
-    for (let g = 0; g < tournament.numberOfGroups; g++) {
-      const groupTeams = tournament.teams
-        .slice(
-          g * tournament.teamsPerGroup!,
-          (g + 1) * tournament.teamsPerGroup!,
-        )
-        .sort((a, b) => (b.groupPoints || 0) - (a.groupPoints || 0))
-        .slice(0, tournament.knockoutQualifiers);
-      qualifiedTeams.push(...groupTeams);
-    }
+    // // Get qualified teams from each group based on points
+    // const qualifiedTeams: Team[] = [];
+    // for (let g = 0; g < tournament.numberOfGroups; g++) {
+    //   const groupTeams = tournament.teams
+    //     .slice(
+    //       g * tournament.teamsPerGroup!,
+    //       (g + 1) * tournament.teamsPerGroup!,
+    //     )
+    //     .sort((a, b) => (b.groupPoints || 0) - (a.groupPoints || 0))
+    //     .slice(0, tournament.knockoutQualifiers);
+    //   qualifiedTeams.push(...groupTeams);
+    // }
 
-    // Generate knockout matches
-    const matches: Match[] = [];
-    const rounds = Math.ceil(Math.log2(qualifiedTeams.length));
-    let matchNumber = 0;
+    // // Generate knockout matches
+    // const matches: Match[] = [];
+    // const rounds = Math.ceil(Math.log2(qualifiedTeams.length));
+    // let matchNumber = 0;
 
-    // First round
-    for (let i = 0; i < qualifiedTeams.length; i += 2) {
-      if (i + 1 < qualifiedTeams.length) {
-        matches.push({
-          id: crypto.randomUUID(),
-          team1Id: qualifiedTeams[i].id,
-          team2Id: qualifiedTeams[i + 1].id,
-          team1Score: 0,
-          team2Score: 0,
-          completed: false,
-          phase: 'knockout',
-          round: 1,
-          matchNumber: matchNumber++,
-        });
-      }
-    }
+    // // First round
+    // for (let i = 0; i < qualifiedTeams.length; i += 2) {
+    //   if (i + 1 < qualifiedTeams.length) {
+    //     matches.push({
+    //       id: crypto.randomUUID(),
+    //       team1Id: qualifiedTeams[i].id,
+    //       team2Id: qualifiedTeams[i + 1].id,
+    //       team1Score: 0,
+    //       team2Score: 0,
+    //       completed: false,
+    //       phase: 'knockout',
+    //       round: 1,
+    //       matchNumber: matchNumber++,
+    //     });
+    //   }
+    // }
 
-    // Add placeholder matches for subsequent rounds
-    let matchesInRound = Math.floor(matches.length / 2);
-    for (let round = 2; round <= rounds; round++) {
-      for (let i = 0; i < matchesInRound; i++) {
-        matches.push({
-          id: crypto.randomUUID(),
-          team1Id: '', // Will be filled when previous round completes
-          team2Id: '',
-          team1Score: 0,
-          team2Score: 0,
-          completed: false,
-          phase: 'knockout',
-          round: round,
-          matchNumber: matchNumber++,
-        });
-      }
-      matchesInRound = Math.floor(matchesInRound / 2);
-    }
+    // // Add placeholder matches for subsequent rounds
+    // let matchesInRound = Math.floor(matches.length / 2);
+    // for (let round = 2; round <= rounds; round++) {
+    //   for (let i = 0; i < matchesInRound; i++) {
+    //     matches.push({
+    //       id: crypto.randomUUID(),
+    //       team1Id: '', // Will be filled when previous round completes
+    //       team2Id: '',
+    //       team1Score: 0,
+    //       team2Score: 0,
+    //       completed: false,
+    //       phase: 'knockout',
+    //       round: round,
+    //       matchNumber: matchNumber++,
+    //     });
+    //   }
+    //   matchesInRound = Math.floor(matchesInRound / 2);
+    // }
 
-    // Keep group matches and add knockout matches
-    tournament.matches = [
-      ...tournament.matches.filter((m) => m.phase === 'group'),
-      ...matches,
-    ];
-    tournament.currentPhase = 'knockout';
-    tournament.status = 'knockout';
-    this.updateTournament(tournament);
+    // // Keep group matches and add knockout matches
+    // tournament.matches = [
+    //   ...tournament.matches.filter((m) => m.phase === 'group'),
+    //   ...matches,
+    // ];
+    // tournament.currentPhase = 'knockout';
+    // tournament.status = 'knockout';
+    // this.updateTournament(tournament);
   }
 
   updateMatchScore(
@@ -239,8 +366,8 @@ export class TournamentService {
   }
 
   private updateGroupStandings(tournament: Tournament, match: Match): void {
-    const team1 = tournament.teams.find((t) => t.id === match.team1Id);
-    const team2 = tournament.teams.find((t) => t.id === match.team2Id);
+    const team1 = tournament.teams.get(match.team1Id)!;
+    const team2 = tournament.teams.get(match.team2Id)!;
 
     if (!team1 || !team2) return;
 

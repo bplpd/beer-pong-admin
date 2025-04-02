@@ -114,19 +114,13 @@ export class TournamentFormComponent implements OnInit {
       const formData = this.tournamentForm.value;
       const routeId = this.route.snapshot.paramMap.get('id')!;
       const id = this.isEditing ? routeId : crypto.randomUUID();
-      const tournament: Tournament = {
+
+      const tournament = new Tournament(
         id,
-        name: formData.name,
-        date: formData.date,
-        description: formData.description || '',
-        status: 'pending',
-        teams: [],
-        matches: [],
-        currentPhase: 'group',
-        teamsPerGroup: 4,
-        numberOfGroups: 1,
-        knockoutQualifiers: 2,
-      };
+        formData.name,
+        formData.date,
+        formData.description || '',
+      );
 
       if (this.isEditing) {
         this.tournamentService.updateTournament(tournament);

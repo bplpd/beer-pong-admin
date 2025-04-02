@@ -1,24 +1,27 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, ActivatedRoute, Router } from '@angular/router';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
-import { MatListModule } from '@angular/material/list';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
-  TournamentService,
-  Tournament,
   Match,
   Team,
+  TeamId,
+  Tournament,
+  TournamentService,
 } from '../../../services/tournament.service';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { GroupPhaseComponent } from './group-phase/group-phase.component';
+import { KnockoutPhaseComponent } from './knockout-phase/knockout-phase.component';
 import { TeamDialogComponent } from './team-dialog/team-dialog.component';
 
 @Component({
@@ -39,14 +42,21 @@ import { TeamDialogComponent } from './team-dialog/team-dialog.component';
     MatCheckboxModule,
     MatIconModule,
     TeamDialogComponent,
+    GroupPhaseComponent,
+    KnockoutPhaseComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './tournament-detail.component.html',
-  styleUrls: ['./tournament-detail.component.scss'],
+  styleUrl: './tournament-detail.component.scss',
 })
 export class TournamentDetailComponent implements OnInit {
+  tournamentId: string | null = null;
   tournament: Tournament | null = null;
   activeTab: 'teams' | 'matches' = 'teams';
+  groupedTeams = signal<Team[][]>([]);
+  numberOfGroups = signal<number>(1);
+
+  addTeamBtn = viewChild<MatButton>('addTeamBtn');
 
   constructor(
     private route: ActivatedRoute,
@@ -60,30 +70,57 @@ export class TournamentDetailComponent implements OnInit {
     if (id) {
       this.tournamentService.getTournament(id).subscribe((tournament) => {
         this.tournament = tournament || null;
+        if (this.tournament) {
+          this.tournamentId = id;
+          this.createGroupedTeams();
+        }
       });
     }
   }
 
-  get groupedTeams(): { [key: string]: Team[] } {
-    if (!this.tournament || !this.tournament.teams.length) return {};
+  createGroupedTeams(): void {
+    if (!this.tournament) return;
 
-    const groups: { [key: string]: Team[] } = {};
-    const teamsPerGroup = this.tournament.teamsPerGroup || 4;
+    const teams = Array.from(this.tournament.teams.values());
+    const numGroups = this.numberOfGroups();
+    const teamsPerGroup = Math.ceil(teams.length / numGroups);
 
-    for (let i = 0; i < this.tournament.teams.length; i++) {
-      const groupIndex = Math.floor(i / teamsPerGroup);
-      if (!groups[groupIndex]) {
-        groups[groupIndex] = [];
-      }
-      groups[groupIndex].push(this.tournament.teams[i]);
-    }
+    const groups: Team[][] = Array.from({ length: numGroups }, () => []);
 
-    return groups;
+    teams.forEach((team, index) => {
+      const groupIndex = index % numGroups;
+      groups[groupIndex].push(team);
+    });
+
+    this.groupedTeams.set(groups);
+  }
+
+  removeTeam(team: any): void {
+    if (!this.tournament) return;
+
+    this.tournamentService.removeTeamFromTournament(
+      this.tournament.id,
+      team.id,
+    );
+
+    this.tournamentService
+      .getTournament(this.tournament.id)
+      .subscribe((tournament) => {
+        this.tournament = tournament || null;
+        this.createGroupedTeams();
+      });
   }
 
   startGroupPhase(): void {
     if (!this.tournament) return;
     this.tournamentService.generateGroupMatches(this.tournament);
+
+    // Refresh tournament data to get updated groups
+    this.tournamentService
+      .getTournament(this.tournament.id)
+      .subscribe((tournament) => {
+        this.tournament = tournament || null;
+      });
   }
 
   startKnockoutPhase(): void {
@@ -92,7 +129,9 @@ export class TournamentDetailComponent implements OnInit {
   }
 
   getGroupMatches(): Match[] {
-    return this.tournament?.matches.filter((m) => m.phase === 'group') || [];
+    return Array.from(this.tournament?.matches.values() || []).filter(
+      (m) => m.phase === 'group'
+    );
   }
 
   getKnockoutMatches(): Match[] {
@@ -128,8 +167,8 @@ export class TournamentDetailComponent implements OnInit {
     return roundNames[round as keyof typeof roundNames] || `Round ${round}`;
   }
 
-  getTeamName(teamId: string): string {
-    return this.tournament?.teams.find((t) => t.id === teamId)?.name || 'TBD';
+  getTeamName(teamId: TeamId): string {
+    return this.tournament!.teams.get(teamId)!.name || 'TBD';
   }
 
   updateMatchScore(match: Match, team1Score: number, team2Score: number): void {
@@ -157,6 +196,9 @@ export class TournamentDetailComponent implements OnInit {
   addTeam(): void {
     if (!this.tournament) return;
 
+    const btn_ref = this.addTeamBtn();
+    btn_ref?._elementRef.nativeElement.blur();
+
     const dialogRef = this.dialog.open(TeamDialogComponent, {
       width: '500px',
       data: {},
@@ -175,20 +217,10 @@ export class TournamentDetailComponent implements OnInit {
             groupLosses: 0,
           };
 
-          this.tournament.teams.push(newTeam);
-          this.tournamentService.updateTournament(this.tournament);
+          this.tournamentService.addTeam(newTeam, this.tournament.id);
+          this.createGroupedTeams();
         }
       });
-  }
-
-  removeTeam(team: Team): void {
-    if (!this.tournament) return;
-
-    const index = this.tournament.teams.findIndex((t) => t.id === team.id);
-    if (index > -1) {
-      this.tournament.teams.splice(index, 1);
-      this.tournamentService.updateTournament(this.tournament);
-    }
   }
 
   getTeamRecord(team: Team): string {
@@ -212,29 +244,8 @@ export class TournamentDetailComponent implements OnInit {
   }
 
   generateMatches(): void {
-    if (!this.tournament || this.tournament.teams.length < 2) return;
-
-    const teams = this.tournament.teams;
-    const matches: Match[] = [];
-
-    // Generate round-robin matches
-    for (let i = 0; i < teams.length; i++) {
-      for (let j = i + 1; j < teams.length; j++) {
-        matches.push({
-          id: crypto.randomUUID(),
-          team1Id: teams[i].id,
-          team2Id: teams[j].id,
-          team1Score: 0,
-          team2Score: 0,
-          completed: false,
-          phase: 'group',
-        });
-      }
-    }
-
-    this.tournament.matches = matches;
-    this.tournament.status = 'group';
-    this.tournamentService.updateTournament(this.tournament);
+    if (!this.tournament || this.tournament.teams.size < 2) return;
+    this.tournamentService.generateGroupMatches(this.tournament);
   }
 
   updateScore(event: Event, match: Match, team: 'team1' | 'team2'): void {
@@ -324,26 +335,18 @@ export class TournamentDetailComponent implements OnInit {
     }
   }
 
-  editTeam(team: Team): void {
-    if (!this.tournament) return;
+  updateNumberOfGroups(change: number): void {
+    const currentGroups = this.numberOfGroups();
+    const newValue = currentGroups + change;
 
-    const dialogRef = this.dialog.open(TeamDialogComponent, {
-      width: '500px',
-      data: { team },
-    });
-
-    dialogRef.afterClosed().subscribe((updatedTeam: Team | undefined) => {
-      if (updatedTeam) {
-        const updatedTournament: Tournament = {
-          ...this.tournament!,
-          teams: this.tournament!.teams.map((t) =>
-            t.id === team.id ? updatedTeam : t,
-          ),
-        };
-
-        this.tournamentService.updateTournament(updatedTournament);
-        this.tournament = updatedTournament;
-      }
-    });
+    // Ensure we have at least 1 group and not more groups than teams
+    if (
+      this.tournament &&
+      newValue >= 1 &&
+      newValue <= this.tournament.teams.size
+    ) {
+      this.numberOfGroups.set(newValue);
+      this.createGroupedTeams();
+    }
   }
 }

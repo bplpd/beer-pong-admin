@@ -1,0 +1,16 @@
+.knockout-match {
+  background: white;
+  border-radius: 4px;
+  padding: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &.completed {
+    background: #f8f9fa;
+  }
+
+  &.winner-team1 .team1,
+  &.winner-team2 .team2 {
+    font-weight: 500;
+    color: #2e7d32;
+  }
+}
