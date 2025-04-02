@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import {
@@ -12,23 +12,31 @@ import {
   templateUrl: './number-groups.component.html',
   styleUrl: './number-groups.component.scss',
 })
-export class NumberGroupsComponent {
-  tournament = input.required<Tournament>();
-  createGroupedTeams = output<number>();
+export class NumberGroupsComponent implements OnInit {
+  id = input.required<string>();
 
-  constructor(tournamentService: TournamentService) {}
+  tournament = signal<Tournament | undefined>(undefined);
+
+  constructor(private tournamentService: TournamentService) {}
+
+  ngOnInit() {
+    this.tournamentService.getTournaments().subscribe((tournaments) => {
+      const id = this.id();
+      const tournament = tournaments.find((t) => t.id === id);
+      if (!tournament) {
+        throw new Error(`Tournament with id ${id} not found`);
+      }
+      this.tournament.set(tournament);
+    });
+  }
 
   updateNumberOfGroups(change: number): void {
-    const currentGroups = this.tournament().numberOfGroups;
+    const currentGroups = this.tournament()!.numberOfGroups;
     const newValue = currentGroups + change;
 
     // Ensure we have at least 1 group and not more groups than teams
-    if (
-      this.tournament &&
-      newValue >= 1 &&
-      newValue <= this.tournament().teams.size
-    ) {
-      this.createGroupedTeams.emit(newValue);
+    if (newValue >= 1 && newValue <= this.tournament()!.teams.size) {
+      this.tournamentService.updateNumberOfGroups(this.id(), newValue);
     }
   }
 }

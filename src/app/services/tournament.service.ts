@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export type TeamId = string;
 
@@ -100,10 +100,8 @@ export class TournamentService {
     return this.tournaments;
   }
 
-  getTournament(id: string): Observable<Tournament | undefined> {
-    return this.tournaments.pipe(
-      map((tournaments) => tournaments.find((t) => t.id === id)),
-    );
+  getTournament(id: string, tournaments: Tournament[]): Tournament | undefined {
+    return tournaments.find((t) => t.id === id);
   }
 
   createTournament(tournament: Tournament): void {
@@ -120,6 +118,13 @@ export class TournamentService {
     this.saveToLocalStorage();
   }
 
+  deleteTournament(id: string): void {
+    this.tournaments.next(this.tournaments.value.filter((t) => t.id !== id));
+    this.saveToLocalStorage();
+  }
+
+  // ### Teams Section ###
+
   addTeam(team: Team, tournamentId: string): void {
     const tournament = this.tournaments.value.find(
       (t) => t.id === tournamentId,
@@ -128,13 +133,10 @@ export class TournamentService {
 
     // Add the team
     tournament.teams.set(team.id, team);
-    this.createGroups(tournament);
-
-    // Update the tournament
-    this.updateTournament(tournament);
+    this.createGroupedTeams(tournamentId);
   }
 
-  removeTeam(teamId: string, tournamentId: string): void {
+  removeTeamFromTournament(tournamentId: string, teamId: string): void {
     const tournament = this.tournaments.value.find(
       (t) => t.id === tournamentId,
     );
@@ -142,11 +144,47 @@ export class TournamentService {
 
     // Remove the team
     tournament.teams.delete(teamId);
-    this.createGroups(tournament);
+    tournament.matches = tournament.matches.filter(
+      (m) => m.team1Id !== teamId && m.team2Id !== teamId,
+    );
 
     // Update the tournament
     this.updateTournament(tournament);
   }
+
+  // ### Groups Section ###
+
+  createGroupedTeams(tournamentId: string): void {
+    const tournament = this.tournaments.value.find(
+      (t) => t.id === tournamentId,
+    );
+    if (!tournament) return;
+
+    const teams = Array.from(tournament.teams.values());
+    const numGroups = tournament.numberOfGroups;
+
+    const groups: Team[][] = Array.from({ length: numGroups }, () => []);
+
+    teams.forEach((team, index) => {
+      const groupIndex = index % numGroups;
+      groups[groupIndex].push(team);
+    });
+
+    tournament.groups = groups;
+    this.generateGroupMatches(tournament);
+  }
+
+  updateNumberOfGroups(tournamentId: string, numberOfGroups: number): void {
+    const tournament = this.tournaments.value.find(
+      (t) => t.id === tournamentId,
+    );
+    if (!tournament) return;
+
+    tournament.numberOfGroups = numberOfGroups;
+    this.createGroupedTeams(tournamentId);
+  }
+
+  // ### Matches Section ###
 
   generateGroupMatches(tournament: Tournament): void {
     const matches: Match[] = [];
@@ -190,84 +228,6 @@ export class TournamentService {
 
     tournament.matches = matches;
     tournament.status = 'group';
-    this.updateTournament(tournament);
-  }
-
-  createGroups(tournament: Tournament): void {
-    // Calculate optimal number of groups and teams per group
-    const totalTeams = tournament.teams.size;
-    let numberOfGroups: number;
-
-    // For 5 teams: 2 groups (3,2)
-    // For 6 teams: 2 groups (3,3)
-    // For 7 teams: 2 groups (4,3)
-    // For 8 teams: 2 groups (4,4)
-    // For 9 teams: 3 groups (3,3,3)
-    // For 10 teams: 3 groups (4,3,3)
-    // For 11 teams: 3 groups (4,4,3)
-    // For 12 teams: 3 groups (4,4,4)
-    if (totalTeams <= 4) {
-      numberOfGroups = 1;
-    } else if (totalTeams <= 8) {
-      numberOfGroups = 2;
-    } else if (totalTeams <= 12) {
-      numberOfGroups = 3;
-    } else {
-      numberOfGroups = 4;
-    }
-
-    tournament.numberOfGroups = numberOfGroups;
-    tournament.groups = Array.from({ length: numberOfGroups }, () => []);
-
-    // Get all team IDs and shuffle them
-    const teamIds = Array.from(tournament.teams.keys());
-    for (let i = teamIds.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [teamIds[i], teamIds[j]] = [teamIds[j], teamIds[i]];
-    }
-
-    // Distribute teams across groups using snake pattern
-    // For example, with 3 groups:
-    // Group 1: 1, 6, 7
-    // Group 2: 2, 5, 8
-    // Group 3: 3, 4, 9
-    let forward = true;
-    for (let i = 0; i < teamIds.length; i++) {
-      const groupIndex = forward
-        ? i % numberOfGroups
-        : numberOfGroups - 1 - (i % numberOfGroups);
-      const team = tournament.teams.get(teamIds[i])!;
-
-      tournament.groups[groupIndex].push(team);
-
-      // Reverse direction after completing each row
-      if ((i + 1) % numberOfGroups === 0) {
-        forward = !forward;
-      }
-    }
-
-    // Update the tournament
-    this.updateTournament(tournament);
-  }
-
-  deleteTournament(id: string): void {
-    this.tournaments.next(this.tournaments.value.filter((t) => t.id !== id));
-    this.saveToLocalStorage();
-  }
-
-  removeTeamFromTournament(tournamentId: string, teamId: string): void {
-    const tournament = this.tournaments.value.find(
-      (t) => t.id === tournamentId,
-    );
-    if (!tournament) return;
-
-    // Remove the team
-    tournament.teams.delete(teamId);
-    tournament.matches = tournament.matches.filter(
-      (m) => m.team1Id !== teamId && m.team2Id !== teamId,
-    );
-
-    // Update the tournament
     this.updateTournament(tournament);
   }
 

@@ -1,4 +1,4 @@
-@if (tournament) {
+@if (tournament && tournamentId) {
   <div class="tournament-detail">
     <div class="tournament-header">
       <h1>{{ tournament.name }}</h1>
@@ -20,19 +20,13 @@
       </mat-checkbox>
     </div>
 
-    <mat-tab-group
-      [selectedIndex]="activeTab === 'teams' ? 0 : 1"
-      (selectedIndexChange)="activeTab = $event === 0 ? 'teams' : 'matches'"
-    >
+    <mat-tab-group>
       <mat-tab label="Teams">
         <div class="teams-container">
           <div class="teams-header">
             <div class="teams-header-left">
               <h2>Teams</h2>
-              <app-number-groups
-                [tournament]="tournament"
-                (createGroupedTeams)="createGroupedTeams($event)"
-              />
+              <app-number-groups [id]="tournamentId" />
             </div>
             <button
               #addTeamBtn
@@ -45,251 +39,17 @@
             </button>
           </div>
 
-          @if (tournament.currentPhase === "group") {
-            <app-group-phase
-              [tournament]="tournament"
-              (removeTeam)="removeTeam($event)"
-            ></app-group-phase>
-          }
-
-          @if (tournament.currentPhase === "knockout") {
-            <div class="teams-list">
-              <mat-list>
-                @for (team of tournament.teams.values(); track team.id) {
-                  <mat-list-item>
-                    <span matListItemTitle>{{ team.name }}</span>
-                    <button
-                      mat-icon-button
-                      color="warn"
-                      class="hover:color-black transition"
-                      (click)="removeTeam(team)"
-                      [disabled]="tournament.status !== 'group'"
-                      matTooltip="Remove team"
-                      matListItemMeta
-                      [attr.tabindex]="tournament.status !== 'group' ? -1 : 0"
-                    >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </mat-list-item>
-                }
-              </mat-list>
-            </div>
-          }
+          <app-group [id]="tournamentId" />
         </div>
       </mat-tab>
 
       @if (tournament && tournament.teams && tournament.teams.size > 1) {
         <mat-tab label="Matches">
-          <div class="matches-container">
-            <div class="matches-header">
-              <h2>Matches</h2>
-              @if (canStartKnockoutPhase()) {
-                <button
-                  mat-raised-button
-                  color="primary"
-                  (click)="startKnockoutPhase()"
-                >
-                  <mat-icon>play_arrow</mat-icon>
-                  <span class="ml-1">Start Knockout Phase</span>
-                </button>
-              }
-            </div>
+          <app-matches [id]="tournamentId" />
+        </mat-tab>
 
-            @if (tournament.currentPhase === "group") {
-              <div class="group-matches">
-                @for (group of groupedTeams(); track $index) {
-                  <mat-card class="group-card">
-                    <mat-card-header>
-                      <mat-card-title>Group {{ $index + 1 }}</mat-card-title>
-                    </mat-card-header>
-                    <mat-card-content>
-                      <table
-                        mat-table
-                        [dataSource]="getGroupMatches($index)"
-                        class="mat-elevation-z1"
-                      >
-                        <!-- Team 1 Column -->
-                        <ng-container matColumnDef="team1">
-                          <th mat-header-cell *matHeaderCellDef>Team 1</th>
-                          <td mat-cell *matCellDef="let match">
-                            {{ getTeamName(match.team1Id) }}
-                          </td>
-                        </ng-container>
-
-                        <!-- Team 2 Column -->
-                        <ng-container matColumnDef="team2">
-                          <th mat-header-cell *matHeaderCellDef>Team 2</th>
-                          <td mat-cell *matCellDef="let match">
-                            {{ getTeamName(match.team2Id) }}
-                          </td>
-                        </ng-container>
-
-                        <!-- Score Column -->
-                        <ng-container matColumnDef="score">
-                          <th mat-header-cell *matHeaderCellDef>Score</th>
-                          <td mat-cell *matCellDef="let match">
-                            <div class="score-inputs">
-                              <mat-form-field
-                                appearance="outline"
-                                class="score-field"
-                              >
-                                <input
-                                  matInput
-                                  type="number"
-                                  min="0"
-                                  [(ngModel)]="match.team1Score"
-                                  (ngModelChange)="
-                                    updateMatchScore(
-                                      match,
-                                      $event,
-                                      match.team2Score
-                                    )
-                                  "
-                                  [disabled]="
-                                    tournament.currentPhase !== 'group'
-                                  "
-                                />
-                              </mat-form-field>
-                              <span class="score-separator">:</span>
-                              <mat-form-field
-                                appearance="outline"
-                                class="score-field"
-                              >
-                                <input
-                                  matInput
-                                  type="number"
-                                  min="0"
-                                  [(ngModel)]="match.team2Score"
-                                  (ngModelChange)="
-                                    updateMatchScore(
-                                      match,
-                                      match.team1Score,
-                                      $event
-                                    )
-                                  "
-                                  [disabled]="
-                                    tournament.currentPhase !== 'group'
-                                  "
-                                />
-                              </mat-form-field>
-                            </div>
-                          </td>
-                        </ng-container>
-
-                        <!-- Status Column -->
-                        <ng-container matColumnDef="status">
-                          <th mat-header-cell *matHeaderCellDef>Status</th>
-                          <td mat-cell *matCellDef="let match">
-                            <mat-checkbox
-                              [(ngModel)]="match.completed"
-                              (change)="
-                                updateMatchScore(
-                                  match,
-                                  match.team1Score,
-                                  match.team2Score
-                                )
-                              "
-                              [disabled]="tournament.currentPhase !== 'group'"
-                            >
-                              Completed
-                            </mat-checkbox>
-                          </td>
-                        </ng-container>
-
-                        <tr
-                          mat-header-row
-                          *matHeaderRowDef="[
-                            'team1',
-                            'team2',
-                            'score',
-                            'status',
-                          ]"
-                        ></tr>
-                        <tr
-                          mat-row
-                          *matRowDef="
-                            let row;
-                            columns: ['team1', 'team2', 'score', 'status']
-                          "
-                          [class.completed]="row.completed"
-                        ></tr>
-                      </table>
-                    </mat-card-content>
-                  </mat-card>
-                }
-              </div>
-            }
-
-            @if (tournament.currentPhase === "knockout") {
-              <div class="knockout-bracket">
-                <div *ngFor="let round of getKnockoutRounds()" class="round">
-                  <h3>{{ getRoundName(round.round) }}</h3>
-                  <div class="round-matches">
-                    @for (match of round.matches; track match.id) {
-                      <mat-card class="match-card">
-                        <mat-card-content>
-                          <div class="match-teams">
-                            <span class="team1">
-                              {{ getTeamName(match.team1Id) }}
-                            </span>
-                            <span class="vs">vs</span>
-                            <span class="team2">
-                              {{ getTeamName(match.team2Id) }}
-                            </span>
-                          </div>
-                          <div class="match-scores">
-                            <mat-form-field>
-                              <input
-                                matInput
-                                type="number"
-                                [(ngModel)]="match.team1Score"
-                                min="0"
-                                (change)="
-                                  updateMatchScore(
-                                    match,
-                                    match.team1Score,
-                                    match.team2Score
-                                  )
-                                "
-                              />
-                            </mat-form-field>
-                            <span>-</span>
-                            <mat-form-field>
-                              <input
-                                matInput
-                                type="number"
-                                [(ngModel)]="match.team2Score"
-                                min="0"
-                                (change)="
-                                  updateMatchScore(
-                                    match,
-                                    match.team1Score,
-                                    match.team2Score
-                                  )
-                                "
-                              />
-                            </mat-form-field>
-                          </div>
-                          <mat-checkbox
-                            [(ngModel)]="match.completed"
-                            (change)="
-                              updateMatchScore(
-                                match,
-                                match.team1Score,
-                                match.team2Score
-                              )
-                            "
-                          >
-                            Completed
-                          </mat-checkbox>
-                        </mat-card-content>
-                      </mat-card>
-                    }
-                  </div>
-                </div>
-              </div>
-            }
-          </div>
+        <mat-tab label="Knockout">
+          <app-knockout [tournamentId]="tournamentId" />
         </mat-tab>
       }
     </mat-tab-group>

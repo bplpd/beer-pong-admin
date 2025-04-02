@@ -1,0 +1,65 @@
+<div class="knockout-bracket">
+  @for (round of getKnockoutRounds(); track round) {
+    <div class="round">
+      <h3>{{ getRoundName(round.round) }}</h3>
+      <div class="round-matches">
+        @for (match of round.matches; track match.id) {
+          <mat-card class="match-card">
+            <mat-card-content>
+              <div class="match-teams">
+                <span class="team1">
+                  {{ getTeamName(match.team1Id) }}
+                </span>
+                <span class="vs">vs</span>
+                <span class="team2">
+                  {{ getTeamName(match.team2Id) }}
+                </span>
+              </div>
+              <div class="match-scores">
+                <mat-form-field>
+                  <input
+                    matInput
+                    type="number"
+                    [(ngModel)]="match.team1Score"
+                    min="0"
+                    (change)="
+                      updateMatchScore(
+                        match,
+                        match.team1Score,
+                        match.team2Score
+                      )
+                    "
+                  />
+                </mat-form-field>
+                <span>-</span>
+                <mat-form-field>
+                  <input
+                    matInput
+                    type="number"
+                    [(ngModel)]="match.team2Score"
+                    min="0"
+                    (change)="
+                      updateMatchScore(
+                        match,
+                        match.team1Score,
+                        match.team2Score
+                      )
+                    "
+                  />
+                </mat-form-field>
+              </div>
+              <mat-checkbox
+                [(ngModel)]="match.completed"
+                (change)="
+                  updateMatchScore(match, match.team1Score, match.team2Score)
+                "
+              >
+                Completed
+              </mat-checkbox>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    </div>
+  }
+</div>

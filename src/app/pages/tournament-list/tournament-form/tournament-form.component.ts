@@ -77,21 +77,20 @@ export class TournamentFormComponent implements OnInit {
   ngOnInit(): void {
     this.dateAdapter.setLocale('de');
     if (this.isEditing && this.tournamentId) {
-      this.tournamentService
-        .getTournament(this.tournamentId)
-        .subscribe((tournament) => {
-          if (tournament) {
-            // Format the date to yyyy-MM-dd for the input
-            const date = new Date(tournament.date);
-            const formattedDate = date.toISOString().split('T')[0];
+      this.tournamentService.getTournaments().subscribe((tournaments) => {
+        const tournament = tournaments.find((t) => t.id === this.tournamentId);
+        if (tournament) {
+          // Format the date to yyyy-MM-dd for the input
+          const date = new Date(tournament.date);
+          const formattedDate = date.toISOString().split('T')[0];
 
-            this.tournamentForm.patchValue({
-              name: tournament.name,
-              date: formattedDate,
-              description: tournament.description,
-            });
-          }
-        });
+          this.tournamentForm.patchValue({
+            name: tournament.name,
+            date: formattedDate,
+            description: tournament.description,
+          });
+        }
+      });
     } else {
       const date = new Date().toISOString().split('T')[0];
 
