@@ -29,7 +29,7 @@ export interface Match {
 export class Tournament {
   public teams: Map<TeamId, Team>;
   public matches: Match[] = [];
-  public groups: TeamId[][] = [];
+  public groups: Team[][] = [];
   public status: 'group' | 'knockout' | 'completed' = 'group';
   public currentPhase: 'group' | 'knockout' = 'group';
   public teamsPerGroup: number = 4;
@@ -170,8 +170,8 @@ export class TournamentService {
           if (team1 !== null && team2 !== null) {
             matches.push({
               id: crypto.randomUUID(),
-              team1Id: team1,
-              team2Id: team2,
+              team1Id: team1.id,
+              team2Id: team2.id,
               team1Score: 0,
               team2Score: 0,
               completed: false,
@@ -236,7 +236,9 @@ export class TournamentService {
       const groupIndex = forward
         ? i % numberOfGroups
         : numberOfGroups - 1 - (i % numberOfGroups);
-      tournament.groups[groupIndex].push(teamIds[i]);
+      const team = tournament.teams.get(teamIds[i])!;
+
+      tournament.groups[groupIndex].push(team);
 
       // Reverse direction after completing each row
       if ((i + 1) % numberOfGroups === 0) {

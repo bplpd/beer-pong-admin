@@ -1,6 +1,6 @@
-@for (group of groupedTeams(); track group) {
-  <div class="groups-container">
-    <h3>Group {{ $index + 1 }}</h3>
+@for (group of tournament.groups; track $index) {
+  <div class="mb-3">
+    <h3 class="mb-2">Group {{ $index + 1 }}</h3>
     <table mat-table [dataSource]="group" class="mat-elevation-z2">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Team</th>

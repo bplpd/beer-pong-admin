@@ -46,22 +46,21 @@ export class TeamDialogComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<TeamDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { team?: Team },
+    @Inject(MAT_DIALOG_DATA) public data: { team?: Team; useRandomNames?: boolean },
     private uniqueNameService: UniqueNameService,
   ) {
     this.isEditing = !!data?.team;
-    const name =
-      data?.team?.name || this.uniqueNameService.generateRandomTeamName();
+    const name = data?.team?.name || (data?.useRandomNames ? this.uniqueNameService.generateRandomTeamName() : '');
 
-    // Generate default player names if not editing
-    const defaultPlayers = data?.team?.players || [
+    // Generate default player names if auto-fill is enabled or editing
+    const defaultPlayers = data?.team?.players || (data?.useRandomNames ? [
       this.uniqueNameService.generateRandomPlayerName(),
       this.uniqueNameService.generateRandomPlayerName(),
-    ];
+    ] : ['', '']);
 
     this.teamForm = this.fb.group({
-      name: [name],
-      players: this.fb.array(defaultPlayers, Validators.required),
+      name: [name, Validators.required],
+      players: this.fb.array(defaultPlayers.map(name => [name, Validators.required])),
     });
   }
 
@@ -87,7 +86,10 @@ export class TeamDialogComponent {
 
   onSubmit() {
     if (this.teamForm.valid) {
-      this.dialogRef.close(this.teamForm.value);
+      this.dialogRef.close({
+        name: this.teamForm.value.name,
+        players: this.teamForm.value.players.map((p: any) => p || ''),
+      });
     }
   }
 

@@ -1,0 +1,20 @@
+<div class="flex flex-row items-center justify-between">
+  <span class="group-label">Number of Groups:</span>
+  <div class="flex flex-row gap-2 items-center justify-center">
+    <button
+      mat-icon-button
+      (click)="updateNumberOfGroups(-1)"
+      [disabled]="tournament().numberOfGroups <= 1"
+    >
+      <mat-icon class="mb-2">remove</mat-icon>
+    </button>
+    <span>{{ tournament().numberOfGroups }}</span>
+    <button
+      mat-icon-button
+      (click)="updateNumberOfGroups(1)"
+      [disabled]="tournament().numberOfGroups >= tournament().teams.size"
+    >
+      <mat-icon class="mb-2">add</mat-icon>
+    </button>
+  </div>
+</div>

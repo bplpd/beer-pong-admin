@@ -1,7 +1,6 @@
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, viewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatButton, MatButtonModule } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -12,7 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import {
   Match,
   Team,
@@ -22,6 +22,7 @@ import {
 } from '../../../services/tournament.service';
 import { GroupPhaseComponent } from './group-phase/group-phase.component';
 import { KnockoutPhaseComponent } from './knockout-phase/knockout-phase.component';
+import { NumberGroupsComponent } from './number-groups/number-groups.component';
 import { TeamDialogComponent } from './team-dialog/team-dialog.component';
 
 @Component({
@@ -29,7 +30,6 @@ import { TeamDialogComponent } from './team-dialog/team-dialog.component';
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
     MatDialogModule,
     FormsModule,
     MatTabsModule,
@@ -44,19 +44,23 @@ import { TeamDialogComponent } from './team-dialog/team-dialog.component';
     TeamDialogComponent,
     GroupPhaseComponent,
     KnockoutPhaseComponent,
+    NumberGroupsComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './tournament-detail.component.html',
-  styleUrl: './tournament-detail.component.scss',
+  styleUrls: ['./tournament-detail.component.scss'],
 })
 export class TournamentDetailComponent implements OnInit {
   tournamentId: string | null = null;
   tournament: Tournament | null = null;
   activeTab: 'teams' | 'matches' = 'teams';
+  private _useRandomNames = signal<boolean>(false);
+  useRandomNames = computed(() => this._useRandomNames());
   groupedTeams = signal<Team[][]>([]);
-  numberOfGroups = signal<number>(1);
 
-  addTeamBtn = viewChild<MatButton>('addTeamBtn');
+  setUseRandomNames(value: boolean) {
+    this._useRandomNames.set(value);
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -78,30 +82,38 @@ export class TournamentDetailComponent implements OnInit {
     }
   }
 
-  createGroupedTeams(): void {
+  createGroupedTeams(newValue: number | undefined = undefined): void {
     if (!this.tournament) return;
 
     const teams = Array.from(this.tournament.teams.values());
-    const numGroups = this.numberOfGroups();
-    const teamsPerGroup = Math.ceil(teams.length / numGroups);
-    
+    const numGroups = newValue || this.tournament.numberOfGroups;
+
     const groups: Team[][] = Array.from({ length: numGroups }, () => []);
-    
+
     teams.forEach((team, index) => {
       const groupIndex = index % numGroups;
       groups[groupIndex].push(team);
     });
 
+    this.tournament.groups = groups;
     this.groupedTeams.set(groups);
     this.generateGroupMatches();
   }
 
+  onGroupsUpdate(groups: Team[][]): void {
+    if (!this.tournament) return;
+    this.tournament.groups = groups;
+    this.groupedTeams.set(groups);
+  }
+
   generateGroupMatches(): void {
     if (!this.tournament) return;
-    
+
     // Clear existing group matches
-    this.tournament.matches = this.tournament.matches.filter(m => m.phase !== 'group');
-    
+    this.tournament.matches = this.tournament.matches.filter(
+      (m) => m.phase !== 'group',
+    );
+
     // Generate matches for each group
     this.groupedTeams().forEach((group, groupIndex) => {
       // Generate round-robin matches within the group
@@ -115,7 +127,7 @@ export class TournamentDetailComponent implements OnInit {
             team2Score: 0,
             completed: false,
             phase: 'group',
-            groupIndex: groupIndex
+            groupIndex: groupIndex,
           };
           this.tournament!.matches.push(match);
         }
@@ -126,7 +138,7 @@ export class TournamentDetailComponent implements OnInit {
   getGroupMatches(groupIndex: number): Match[] {
     if (!this.tournament) return [];
     return this.tournament.matches.filter(
-      m => m.phase === 'group' && m.groupIndex === groupIndex
+      (m) => m.phase === 'group' && m.groupIndex === groupIndex,
     );
   }
 
@@ -225,12 +237,9 @@ export class TournamentDetailComponent implements OnInit {
   addTeam(): void {
     if (!this.tournament) return;
 
-    const btn_ref = this.addTeamBtn();
-    btn_ref?._elementRef.nativeElement.blur();
-
     const dialogRef = this.dialog.open(TeamDialogComponent, {
       width: '500px',
-      data: {},
+      data: { useRandomNames: this.useRandomNames() },
     });
 
     dialogRef
@@ -361,21 +370,6 @@ export class TournamentDetailComponent implements OnInit {
     ) {
       this.tournamentService.deleteTournament(this.tournament.id);
       this.router.navigate(['/']);
-    }
-  }
-
-  updateNumberOfGroups(change: number): void {
-    const currentGroups = this.numberOfGroups();
-    const newValue = currentGroups + change;
-
-    // Ensure we have at least 1 group and not more groups than teams
-    if (
-      this.tournament &&
-      newValue >= 1 &&
-      newValue <= this.tournament.teams.size
-    ) {
-      this.numberOfGroups.set(newValue);
-      this.createGroupedTeams();
     }
   }
 }

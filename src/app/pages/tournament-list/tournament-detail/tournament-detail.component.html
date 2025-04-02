@@ -11,6 +11,13 @@
       <p class="description">
         {{ tournament.description || "No description provided." }}
       </p>
+      <mat-checkbox
+        [checked]="useRandomNames()"
+        (change)="setUseRandomNames($event.checked)"
+        class="random-names-toggle"
+      >
+        Auto-fill with random names
+      </mat-checkbox>
     </div>
 
     <mat-tab-group
@@ -22,28 +29,10 @@
           <div class="teams-header">
             <div class="teams-header-left">
               <h2>Teams</h2>
-              @if (tournament.currentPhase === "group") {
-                <div class="group-controls">
-                  <span class="group-label">Number of Groups:</span>
-                  <div class="group-buttons">
-                    <button
-                      mat-icon-button
-                      (click)="updateNumberOfGroups(-1)"
-                      [disabled]="numberOfGroups() <= 1"
-                    >
-                      <mat-icon>remove</mat-icon>
-                    </button>
-                    <span class="group-count">{{ numberOfGroups() }}</span>
-                    <button
-                      mat-icon-button
-                      (click)="updateNumberOfGroups(1)"
-                      [disabled]="numberOfGroups() >= tournament.teams.size"
-                    >
-                      <mat-icon>add</mat-icon>
-                    </button>
-                  </div>
-                </div>
-              }
+              <app-number-groups
+                [tournament]="tournament"
+                (createGroupedTeams)="createGroupedTeams($event)"
+              />
             </div>
             <button
               #addTeamBtn
@@ -58,7 +47,7 @@
 
           @if (tournament.currentPhase === "group") {
             <app-group-phase
-              [groupedTeams]="groupedTeams()"
+              [tournament]="tournament"
               (removeTeam)="removeTeam($event)"
             ></app-group-phase>
           }
@@ -114,17 +103,25 @@
                       <mat-card-title>Group {{ $index + 1 }}</mat-card-title>
                     </mat-card-header>
                     <mat-card-content>
-                      <table mat-table [dataSource]="getGroupMatches($index)" class="mat-elevation-z1">
+                      <table
+                        mat-table
+                        [dataSource]="getGroupMatches($index)"
+                        class="mat-elevation-z1"
+                      >
                         <!-- Team 1 Column -->
                         <ng-container matColumnDef="team1">
                           <th mat-header-cell *matHeaderCellDef>Team 1</th>
-                          <td mat-cell *matCellDef="let match">{{ getTeamName(match.team1Id) }}</td>
+                          <td mat-cell *matCellDef="let match">
+                            {{ getTeamName(match.team1Id) }}
+                          </td>
                         </ng-container>
 
                         <!-- Team 2 Column -->
                         <ng-container matColumnDef="team2">
                           <th mat-header-cell *matHeaderCellDef>Team 2</th>
-                          <td mat-cell *matCellDef="let match">{{ getTeamName(match.team2Id) }}</td>
+                          <td mat-cell *matCellDef="let match">
+                            {{ getTeamName(match.team2Id) }}
+                          </td>
                         </ng-container>
 
                         <!-- Score Column -->
@@ -132,25 +129,47 @@
                           <th mat-header-cell *matHeaderCellDef>Score</th>
                           <td mat-cell *matCellDef="let match">
                             <div class="score-inputs">
-                              <mat-form-field appearance="outline" class="score-field">
+                              <mat-form-field
+                                appearance="outline"
+                                class="score-field"
+                              >
                                 <input
                                   matInput
                                   type="number"
                                   min="0"
                                   [(ngModel)]="match.team1Score"
-                                  (ngModelChange)="updateMatchScore(match, $event, match.team2Score)"
-                                  [disabled]="tournament.currentPhase !== 'group'"
+                                  (ngModelChange)="
+                                    updateMatchScore(
+                                      match,
+                                      $event,
+                                      match.team2Score
+                                    )
+                                  "
+                                  [disabled]="
+                                    tournament.currentPhase !== 'group'
+                                  "
                                 />
                               </mat-form-field>
                               <span class="score-separator">:</span>
-                              <mat-form-field appearance="outline" class="score-field">
+                              <mat-form-field
+                                appearance="outline"
+                                class="score-field"
+                              >
                                 <input
                                   matInput
                                   type="number"
                                   min="0"
                                   [(ngModel)]="match.team2Score"
-                                  (ngModelChange)="updateMatchScore(match, match.team1Score, $event)"
-                                  [disabled]="tournament.currentPhase !== 'group'"
+                                  (ngModelChange)="
+                                    updateMatchScore(
+                                      match,
+                                      match.team1Score,
+                                      $event
+                                    )
+                                  "
+                                  [disabled]="
+                                    tournament.currentPhase !== 'group'
+                                  "
                                 />
                               </mat-form-field>
                             </div>
@@ -163,7 +182,13 @@
                           <td mat-cell *matCellDef="let match">
                             <mat-checkbox
                               [(ngModel)]="match.completed"
-                              (change)="updateMatchScore(match, match.team1Score, match.team2Score)"
+                              (change)="
+                                updateMatchScore(
+                                  match,
+                                  match.team1Score,
+                                  match.team2Score
+                                )
+                              "
                               [disabled]="tournament.currentPhase !== 'group'"
                             >
                               Completed
@@ -171,10 +196,21 @@
                           </td>
                         </ng-container>
 
-                        <tr mat-header-row *matHeaderRowDef="['team1', 'team2', 'score', 'status']"></tr>
-                        <tr 
-                          mat-row 
-                          *matRowDef="let row; columns: ['team1', 'team2', 'score', 'status']"
+                        <tr
+                          mat-header-row
+                          *matHeaderRowDef="[
+                            'team1',
+                            'team2',
+                            'score',
+                            'status',
+                          ]"
+                        ></tr>
+                        <tr
+                          mat-row
+                          *matRowDef="
+                            let row;
+                            columns: ['team1', 'team2', 'score', 'status']
+                          "
                           [class.completed]="row.completed"
                         ></tr>
                       </table>

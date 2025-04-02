@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  margin-bottom: 2rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-mdc-row {
+  &:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+}
+
+button[mat-icon-button] {
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: rgba(244, 67, 54, 0.1);
+  }
+}
