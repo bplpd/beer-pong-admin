@@ -84,15 +84,50 @@ export class TournamentDetailComponent implements OnInit {
     const teams = Array.from(this.tournament.teams.values());
     const numGroups = this.numberOfGroups();
     const teamsPerGroup = Math.ceil(teams.length / numGroups);
-
+    
     const groups: Team[][] = Array.from({ length: numGroups }, () => []);
-
+    
     teams.forEach((team, index) => {
       const groupIndex = index % numGroups;
       groups[groupIndex].push(team);
     });
 
     this.groupedTeams.set(groups);
+    this.generateGroupMatches();
+  }
+
+  generateGroupMatches(): void {
+    if (!this.tournament) return;
+    
+    // Clear existing group matches
+    this.tournament.matches = this.tournament.matches.filter(m => m.phase !== 'group');
+    
+    // Generate matches for each group
+    this.groupedTeams().forEach((group, groupIndex) => {
+      // Generate round-robin matches within the group
+      for (let i = 0; i < group.length; i++) {
+        for (let j = i + 1; j < group.length; j++) {
+          const match: Match = {
+            id: crypto.randomUUID(),
+            team1Id: group[i].id,
+            team2Id: group[j].id,
+            team1Score: 0,
+            team2Score: 0,
+            completed: false,
+            phase: 'group',
+            groupIndex: groupIndex
+          };
+          this.tournament!.matches.push(match);
+        }
+      }
+    });
+  }
+
+  getGroupMatches(groupIndex: number): Match[] {
+    if (!this.tournament) return [];
+    return this.tournament.matches.filter(
+      m => m.phase === 'group' && m.groupIndex === groupIndex
+    );
   }
 
   removeTeam(team: any): void {
@@ -126,12 +161,6 @@ export class TournamentDetailComponent implements OnInit {
   startKnockoutPhase(): void {
     if (!this.tournament) return;
     this.tournamentService.generateKnockoutMatches(this.tournament);
-  }
-
-  getGroupMatches(): Match[] {
-    return Array.from(this.tournament?.matches.values() || []).filter(
-      (m) => m.phase === 'group'
-    );
   }
 
   getKnockoutMatches(): Match[] {
@@ -185,7 +214,7 @@ export class TournamentDetailComponent implements OnInit {
     if (!this.tournament) return false;
 
     // Check if all group matches are completed
-    const groupMatches = this.getGroupMatches();
+    const groupMatches = this.getGroupMatches(0);
     return (
       groupMatches.length > 0 &&
       groupMatches.every((m) => m.completed) &&

@@ -23,6 +23,7 @@ export interface Match {
   round?: number; // For knockout phase: quarterfinal = 1, semifinal = 2, final = 3
   matchNumber?: number; // For knockout phase bracket positioning
   winnerId?: string;
+  groupIndex?: number; // For group phase matches
 }
 
 export class Tournament {
@@ -177,6 +178,7 @@ export class TournamentService {
               phase: 'group',
               round: round + 1,
               matchNumber: matchNumber++,
+              groupIndex: groups.indexOf(group),
             });
           }
         }
