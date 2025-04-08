@@ -42,6 +42,8 @@
                         matInput
                         type="number"
                         min="0"
+                        max="10"
+                        [disabled]="match.completed"
                         [(ngModel)]="match.team1Score"
                         (ngModelChange)="
                           updateMatchScore(match, $event, match.team2Score)
@@ -54,6 +56,8 @@
                         matInput
                         type="number"
                         min="0"
+                        max="10"
+                        [disabled]="match.completed"
                         [(ngModel)]="match.team2Score"
                         (ngModelChange)="
                           updateMatchScore(match, match.team1Score, $event)

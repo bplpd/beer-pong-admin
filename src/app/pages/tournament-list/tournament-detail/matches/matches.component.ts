@@ -62,6 +62,8 @@ export class MatchesComponent implements OnInit {
   }
 
   updateMatchScore(match: Match, team1Score: number, team2Score: number): void {
+    team1Score = Math.min(10, Math.max(0, team1Score));
+    team2Score = Math.min(10, Math.max(0, team2Score));
     const tournament = this.tournament();
     if (!tournament) return;
     this.tournamentService.updateMatchScore(
