@@ -53,6 +53,14 @@ export class MatchCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.tournamentService.getTournaments().subscribe((tournaments) => {
+      const id = this.tournamentId();
+      const tournament = tournaments.find((t) => t.id === id);
+      if (tournament) {
+        this.allTeams = this.tournamentService.getAllTeams(id);
+      }
+    });
+
     const match = this.match_i();
     if (match === undefined) {
       return;

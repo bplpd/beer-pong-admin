@@ -1,23 +1,21 @@
 @if (tournament && tournamentId) {
   <div class="tournament-detail">
-    <div class="tournament-header">
-      <h1>{{ tournament.name }}</h1>
-      <div class="tournament-meta">
+    <div class="flex flex-row justify-between items-center">
+      <h1 class="m-0 p-0">{{ tournament.name }}</h1>
+      <div class="flex flex-row gap-8 items-center">
         <p>Date: {{ tournament.date | date }}</p>
         <p>Teams: {{ tournament.teams.size }}</p>
-        <p>Status: {{ tournament.status }}</p>
-        <p>Phase: {{ tournament.currentPhase }}</p>
+        <p class="description">
+          {{ tournament.description || "No description provided." }}
+        </p>
+        <mat-checkbox
+          [checked]="useRandomNames()"
+          (change)="setUseRandomNames($event.checked)"
+          class="random-names-toggle"
+        >
+          Auto-fill with random names
+        </mat-checkbox>
       </div>
-      <p class="description">
-        {{ tournament.description || "No description provided." }}
-      </p>
-      <mat-checkbox
-        [checked]="useRandomNames()"
-        (change)="setUseRandomNames($event.checked)"
-        class="random-names-toggle"
-      >
-        Auto-fill with random names
-      </mat-checkbox>
     </div>
 
     <div class="teams-container">

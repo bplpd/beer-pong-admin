@@ -1,26 +1,6 @@
 .tournament-detail {
   padding: 2rem;
 
-  .tournament-header {
-    margin-bottom: 2rem;
-
-    h1 {
-      margin-bottom: 1rem;
-    }
-
-    .tournament-meta {
-      display: flex;
-      gap: 2rem;
-      margin-bottom: 1rem;
-      color: rgba(0, 0, 0, 0.6);
-    }
-
-    .description {
-      margin-top: 1rem;
-      color: rgba(0, 0, 0, 0.8);
-    }
-  }
-
   .teams-container {
     padding: 1rem;
 
@@ -43,7 +23,7 @@
           display: flex;
           align-items: center;
           gap: 1rem;
-          
+
           .group-label {
             color: rgba(0, 0, 0, 0.87);
           }
@@ -52,7 +32,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            
+
             .group-count {
               min-width: 2rem;
               text-align: center;
