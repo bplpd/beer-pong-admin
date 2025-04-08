@@ -82,14 +82,16 @@
     </div>
   }
 
-  <div class="round">
-    <h3>Finals</h3>
+  <div class="round items-center flex-1">
     <div class="round-matches">
-      <app-match-card
-        [tournamentId]="id()"
-        [match_i]="final()!"
-        (matchComplete)="onMatchComplete($event)"
-      ></app-match-card>
+      <div>
+        <h3>Finals</h3>
+        <app-match-card
+          [tournamentId]="id()"
+          [match_i]="final()!"
+          (matchComplete)="onMatchComplete($event)"
+        ></app-match-card>
+      </div>
 
       @if (thirdPlaceMatch()) {
         <div>

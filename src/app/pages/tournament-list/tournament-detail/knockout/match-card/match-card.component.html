@@ -39,11 +39,11 @@
       } @else {
         <div class="grid grid-cols-3 items-center gap-2">
           <div class="text-center" [class.font-bold]="is1Winner(match)">
-            {{ match.team1?.name || "TBD" }}
+            {{ match.team1?.name || "..." }}
           </div>
           <div class="text-center text-gray-500">vs</div>
           <div class="text-center" [class.font-bold]="is2Winner(match)">
-            {{ match.team2?.name || "TBD" }}
+            {{ match.team2?.name || "..." }}
           </div>
         </div>
       }
@@ -60,7 +60,7 @@
             class="text-center"
           />
         </mat-form-field>
-        <div class="text-center text-gray-500">-</div>
+        <div class="text-center text-gray-500 mb-6">-</div>
         <mat-form-field class="w-full m-0" appearance="outline">
           <input
             matInput
@@ -87,16 +87,16 @@
   <mat-card class="w-full p-0">
     <mat-card-content class="flex flex-col gap-2 p-2">
       <div class="grid grid-cols-3 items-center gap-2">
-        <div class="text-center text-gray-500">TBD</div>
+        <div class="text-center text-gray-500">...</div>
         <div class="text-center text-gray-500">vs</div>
-        <div class="text-center text-gray-500">TBD</div>
+        <div class="text-center text-gray-500">...</div>
       </div>
 
       <div class="grid grid-cols-3 items-center gap-2">
         <mat-form-field class="w-full m-0" appearance="outline">
           <input matInput type="number" disabled class="text-center" />
         </mat-form-field>
-        <div class="text-center text-gray-500">-</div>
+        <div class="text-center text-gray-500 mb-6">-</div>
         <mat-form-field class="w-full m-0" appearance="outline">
           <input matInput type="number" disabled class="text-center" />
         </mat-form-field>
