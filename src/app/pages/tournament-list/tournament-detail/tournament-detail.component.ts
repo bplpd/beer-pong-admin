@@ -100,18 +100,6 @@ export class TournamentDetailComponent implements OnInit {
     );
   }
 
-  canStartKnockoutPhase(): boolean {
-    if (!this.tournament) return false;
-
-    // Check if all group matches are completed
-    const groupMatches = this.getGroupMatches(0);
-    return (
-      groupMatches.length > 0 &&
-      groupMatches.every((m) => m.completed) &&
-      this.tournament.currentPhase === 'group'
-    );
-  }
-
   getGroupMatches(groupIndex: number): Match[] {
     if (!this.tournament) return [];
     return this.tournament.matches.filter((m) => m.groupIndex === groupIndex);

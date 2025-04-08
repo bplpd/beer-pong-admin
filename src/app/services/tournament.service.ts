@@ -169,7 +169,8 @@ export class TournamentService {
       (t) => t.id === tournamentId,
     );
     if (!tournament) return [];
-    return Array.from(tournament.teams.values());
+    const allTeams = Array.from(tournament.teams.values());
+    return allTeams;
   }
 
   // ### Groups Section ###

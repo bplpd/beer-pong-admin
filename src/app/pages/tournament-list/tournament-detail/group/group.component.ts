@@ -5,7 +5,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
-  Team,
   Tournament,
   TournamentService,
 } from '../../../../services/tournament.service';
@@ -45,7 +44,7 @@ export class GroupComponent implements OnInit {
     return tournament.teams.get(id);
   }
 
-  removeTeam(team: Team) {
-    this.tournamentService.removeTeamFromTournament(this.id(), team.id);
+  removeTeam(teamId: string) {
+    this.tournamentService.removeTeamFromTournament(this.id(), teamId);
   }
 }
