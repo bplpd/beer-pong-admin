@@ -1,30 +1,13 @@
 @if ((match && match.team1 && match.team2) || (match && teams_selectable())) {
-  <mat-card class="flex flex-col max-w-70">
+  <mat-card class="w-full p-0">
     <mat-card-content>
-      <div>
-        @if (teams_selectable() && match) {
-          <div class="flex flex-row">
-            <mat-form-field>
-              <mat-select
-                [value]="match.team1?.name"
-                (valueChange)="select1Team($event, match!)"
-                class="p-0"
-              >
-                @for (team of allTeams; track team.id) {
-                  <mat-option [value]="team.name">
-                    {{ team.name }}
-                  </mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-            <div class="vs">vs</div>
-          </div>
-
-          <mat-form-field>
+      @if (teams_selectable() && match) {
+        <div class="flex flex-row items-center justify-center gap-2">
+          <mat-form-field class="flex-[0.45] m-0 p-0" appearance="outline">
             <mat-select
-              [value]="match.team2?.name"
-              (valueChange)="select2Team($event, match!)"
-              [class.winner]="is2Winner(match!)"
+              [value]="match.team1?.name"
+              (valueChange)="select1Team($event, match!)"
+              class="text-center"
             >
               @for (team of allTeams; track team.id) {
                 <mat-option [value]="team.name">
@@ -33,70 +16,95 @@
               }
             </mat-select>
           </mat-form-field>
-        }
-
-        <!--  -->
-        @else {
-          <div class="match-teams">
-            <div class="team1" [class.winner]="is1Winner(match!)">
-              {{ match.team1?.name }}
-            </div>
-            <div class="vs">vs</div>
-            <div class="team2" [class.winner]="is2Winner(match!)">
-              {{ match.team2?.name }}
-            </div>
+          <div
+            class="flex flex-[0.1] items-center justify-center text-gray-500 mb-6"
+          >
+            vs
           </div>
-        }
+          <mat-form-field class="flex-[0.45] m-0" appearance="outline">
+            <mat-select
+              [value]="match.team2?.name"
+              (valueChange)="select2Team($event, match!)"
+              [class.winner]="is2Winner(match!)"
+              class="text-center"
+            >
+              @for (team of allTeams; track team.id) {
+                <mat-option [value]="team.name">
+                  {{ team.name }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      } @else {
+        <div class="grid grid-cols-3 items-center gap-2">
+          <div class="text-center" [class.font-bold]="is1Winner(match)">
+            {{ match.team1?.name || "TBD" }}
+          </div>
+          <div class="text-center text-gray-500">vs</div>
+          <div class="text-center" [class.font-bold]="is2Winner(match)">
+            {{ match.team2?.name || "TBD" }}
+          </div>
+        </div>
+      }
+
+      <div class="grid grid-cols-3 items-center gap-2">
+        <mat-form-field class="w-full m-0" appearance="outline">
+          <input
+            matInput
+            type="number"
+            min="0"
+            max="10"
+            [disabled]="match.completed"
+            [(ngModel)]="match.team1Score"
+            class="text-center"
+          />
+        </mat-form-field>
+        <div class="text-center text-gray-500">-</div>
+        <mat-form-field class="w-full m-0" appearance="outline">
+          <input
+            matInput
+            type="number"
+            min="0"
+            max="10"
+            [disabled]="match.completed"
+            [(ngModel)]="match.team2Score"
+            class="text-center"
+          />
+        </mat-form-field>
       </div>
 
-      <div class="flex flex-row gap-2">
-        <mat-form-field>
-          <input
-            matInput
-            type="number"
-            [(ngModel)]="match!.team1Score"
-            placeholder="Score"
-          />
-        </mat-form-field>
-        <span>-</span>
-        <mat-form-field>
-          <input
-            matInput
-            type="number"
-            [(ngModel)]="match!.team2Score"
-            placeholder="Score"
-          />
-        </mat-form-field>
-      </div>
       <mat-checkbox
-        [(ngModel)]="match!.completed"
-        (ngModelChange)="matchComplete.emit(match!)"
+        [(ngModel)]="match.completed"
+        (ngModelChange)="matchComplete.emit(match)"
+        class="w-full flex justify-center"
       >
         Match completed
       </mat-checkbox>
     </mat-card-content>
   </mat-card>
 } @else {
-  <mat-card class="match-card">
-    <mat-card-content>
-      <div class="match-teams">
-        <div class="match-teams">
-          <div class="team1">No team yet..</div>
-          <div class="vs">vs</div>
-          <div class="team2">No team yet..</div>
-        </div>
+  <mat-card class="w-full p-0">
+    <mat-card-content class="flex flex-col gap-2 p-2">
+      <div class="grid grid-cols-3 items-center gap-2">
+        <div class="text-center text-gray-500">TBD</div>
+        <div class="text-center text-gray-500">vs</div>
+        <div class="text-center text-gray-500">TBD</div>
       </div>
 
-      <div class="match-scores">
-        <mat-form-field>
-          <input matInput type="number" disabled="true" placeholder="Score" />
+      <div class="grid grid-cols-3 items-center gap-2">
+        <mat-form-field class="w-full m-0" appearance="outline">
+          <input matInput type="number" disabled class="text-center" />
         </mat-form-field>
-        <span>-</span>
-        <mat-form-field>
-          <input matInput type="number" disabled="true" placeholder="Score" />
+        <div class="text-center text-gray-500">-</div>
+        <mat-form-field class="w-full m-0" appearance="outline">
+          <input matInput type="number" disabled class="text-center" />
         </mat-form-field>
       </div>
-      <mat-checkbox disabled="true"> Match completed </mat-checkbox>
+
+      <mat-checkbox disabled class="w-full flex justify-center">
+        Match completed
+      </mat-checkbox>
     </mat-card-content>
   </mat-card>
 }
