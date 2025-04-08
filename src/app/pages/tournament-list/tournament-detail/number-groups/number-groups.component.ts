@@ -23,10 +23,9 @@ export class NumberGroupsComponent implements OnInit {
     this.tournamentService.getTournaments().subscribe((tournaments) => {
       const id = this.id();
       const tournament = tournaments.find((t) => t.id === id);
-      if (!tournament) {
-        throw new Error(`Tournament with id ${id} not found`);
+      if (tournament) {
+        this.tournament.set(tournament);
       }
-      this.tournament.set(tournament);
     });
   }
 
