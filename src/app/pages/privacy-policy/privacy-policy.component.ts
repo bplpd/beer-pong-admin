@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-privacy-policy',
@@ -119,7 +119,7 @@ import { CommonModule } from '@angular/common';
         <h2 class="text-xl font-semibold mb-3">7. Contact Information</h2>
         <p>
           For any privacy-related questions or requests, please contact us at
-          support&#64;dolfus.me/p>
+          support&#64;dolfus.me
         </p>
       </section>
     </div>
