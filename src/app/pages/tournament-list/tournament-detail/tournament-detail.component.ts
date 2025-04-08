@@ -50,7 +50,7 @@ import { TeamDialogComponent } from './team-dialog/team-dialog.component';
 export class TournamentDetailComponent implements OnInit {
   tournamentId: string | null = null;
   tournament: Tournament | null = null;
-  activeTab: number = 2;
+  activeTab: number = 1;
 
   useRandomNames = signal<boolean>(false);
   addTeamBtn = viewChild<MatButton>('addTeamBtn');
@@ -153,11 +153,16 @@ export class TournamentDetailComponent implements OnInit {
             groupPoints: 0,
             groupWins: 0,
             groupLosses: 0,
+            knockout_used: false,
           };
 
           this.tournamentService.addTeam(newTeam, this.tournament.id);
         }
       });
+  }
+
+  resetPoints() {
+    this.tournamentService.resetPoints(this.tournamentId!);
   }
 
   getTeamRecord(team: Team): string {

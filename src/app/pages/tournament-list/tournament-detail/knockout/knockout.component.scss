@@ -1,16 +1,221 @@
-.knockout-match {
-  background: white;
+.round-selection {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f5f5f5;
   border-radius: 4px;
-  padding: 0.75rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
 
-  &.completed {
-    background: #f8f9fa;
+  button {
+    min-width: 120px;
+    transition: all 0.2s ease;
+
+    &.mat-mdc-stroked-button {
+      &.mat-primary {
+        background: #2e7d32;
+        color: white;
+      }
+    }
+  }
+}
+
+.knockout-bracket {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem;
+  overflow-x: auto;
+  min-height: 400px;
+  align-items: flex-start;
+  flex-direction: row;
+
+  .round {
+    display: flex;
+    flex-direction: column;
+    min-width: 240px;
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .round-matches {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      justify-content: space-around;
+      align-items: center;
+      height: 100%;
+      padding: 1rem 0;
+    }
+  }
+}
+
+.match-card {
+  position: relative;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
-  &.winner-team1 .team1,
-  &.winner-team2 .team2 {
-    font-weight: 500;
-    color: #2e7d32;
+  &.third-place {
+    margin-top: 2rem;
+    border-top: 2px dashed #ccc;
+    padding-top: 1rem;
+
+    h4 {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+  }
+
+  mat-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0;
+  }
+
+  .match-teams {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    .team1,
+    .team2 {
+      flex: 1;
+      font-size: 0.9rem;
+      padding: 0.4rem;
+      border-radius: 4px;
+      background: #f8f8f8;
+      transition: all 0.2s ease;
+
+      &.winner {
+        color: #2e7d32;
+        font-weight: 500;
+        background: #e8f5e9;
+      }
+    }
+
+    .vs {
+      font-size: 0.75rem;
+      color: #666;
+      text-align: center;
+    }
+
+    mat-form-field {
+      width: 100%;
+    }
+  }
+
+  .match-scores {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+
+    mat-form-field {
+      width: 60px;
+
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+    }
+
+    span {
+      color: #666;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+  }
+
+  &.completed {
+    background: #f8f8f8;
+    border-color: #2e7d32;
+  }
+
+  // Visual connection between matches
+  &:not(:last-child) {
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      width: 2rem;
+      height: 2px;
+      background: #ccc;
+      transition: background-color 0.2s ease;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      width: 1rem;
+      height: 50%;
+      border-left: 2px solid #ccc;
+      border-top: 2px solid #ccc;
+      transition: border-color 0.2s ease;
+    }
+
+    &:nth-child(even)::before {
+      border-top: none;
+      border-bottom: 2px solid #ccc;
+      top: 0;
+    }
+
+    &:hover {
+      &::after,
+      &::before {
+        border-color: #2e7d32;
+        background-color: #2e7d32;
+      }
+    }
+  }
+}
+
+// Override Material styles for better aesthetics
+:host ::ng-deep {
+  .mat-mdc-form-field {
+    .mat-mdc-text-field-wrapper {
+      background: white;
+      font-size: 0.9rem;
+    }
+  }
+
+  .mat-mdc-checkbox {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .mat-mdc-card {
+    --mdc-elevated-card-container-color: white;
+  }
+
+  .mat-mdc-form-field-infix {
+    min-height: 40px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
   }
 }

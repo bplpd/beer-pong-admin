@@ -9,7 +9,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import {
   Match,
-  Team,
   TeamId,
   Tournament,
   TournamentService,
@@ -34,7 +33,7 @@ import {
 export class MatchesComponent implements OnInit {
   id = input.required<string>();
   tournament = signal<Tournament | undefined>(undefined);
-  groupedTeams = signal<Team[][]>([]);
+  groupedTeams = signal<TeamId[][]>([]);
 
   constructor(private tournamentService: TournamentService) {}
 
@@ -53,9 +52,7 @@ export class MatchesComponent implements OnInit {
   getGroupMatches(groupIndex: number): Match[] {
     const tournament = this.tournament();
     if (!tournament) return [];
-    return tournament.matches.filter(
-      (m) => m.phase === 'group' && m.groupIndex === groupIndex,
-    );
+    return tournament.matches.filter((m) => m.groupIndex === groupIndex);
   }
 
   getTeamName(teamId: TeamId): string {

@@ -1,41 +1,42 @@
-@if (tournament) {
-  @for (group of tournament.groups; track $index) {
+@let tour = tournament();
+@if (tour) {
+  @for (group of tour.groups; track $index) {
     <div class="mb-3">
       <h3 class="mb-2">Group {{ $index + 1 }}</h3>
       <table mat-table [dataSource]="group" class="mat-elevation-z2">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Team</th>
-          <td mat-cell *matCellDef="let team">{{ team.name }}</td>
+          <td mat-cell *matCellDef="let teamId">{{ getTeam(teamId)?.name }}</td>
         </ng-container>
 
         <ng-container matColumnDef="points">
           <th mat-header-cell *matHeaderCellDef>Points</th>
-          <td mat-cell *matCellDef="let team">
-            {{ team.groupPoints || 0 }}
+          <td mat-cell *matCellDef="let teamId">
+            {{ getTeam(teamId)?.groupPoints || 0 }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="wins">
           <th mat-header-cell *matHeaderCellDef>W</th>
-          <td mat-cell *matCellDef="let team">
-            {{ team.groupWins || 0 }}
+          <td mat-cell *matCellDef="let teamId">
+            {{ getTeam(teamId)?.groupWins || 0 }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="losses">
           <th mat-header-cell *matHeaderCellDef>L</th>
-          <td mat-cell *matCellDef="let team">
-            {{ team.groupLosses || 0 }}
+          <td mat-cell *matCellDef="let teamId">
+            {{ getTeam(teamId)?.groupLosses || 0 }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let team">
+          <td mat-cell *matCellDef="let teamId">
             <button
               mat-icon-button
               color="warn"
-              (click)="removeTeam(team)"
+              (click)="removeTeam(teamId)"
               matTooltip="Remove team"
             >
               <mat-icon>delete</mat-icon>

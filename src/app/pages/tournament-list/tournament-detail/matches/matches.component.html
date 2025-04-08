@@ -20,7 +20,7 @@
               <ng-container matColumnDef="team1">
                 <th mat-header-cell *matHeaderCellDef>Team 1</th>
                 <td mat-cell *matCellDef="let match">
-                  {{ getTeamName(match.team1Id) }}
+                  {{ match.team1!.name }}
                 </td>
               </ng-container>
 
@@ -28,7 +28,7 @@
               <ng-container matColumnDef="team2">
                 <th mat-header-cell *matHeaderCellDef>Team 2</th>
                 <td mat-cell *matCellDef="let match">
-                  {{ getTeamName(match.team2Id) }}
+                  {{ match.team2!.name }}
                 </td>
               </ng-container>
 
@@ -71,7 +71,11 @@
                   <mat-checkbox
                     [(ngModel)]="match.completed"
                     (change)="
-                      updateMatchScore(match, match.team1Score, match.team2Score)
+                      updateMatchScore(
+                        match,
+                        match.team1Score,
+                        match.team2Score
+                      )
                     "
                   >
                     Completed
@@ -85,7 +89,10 @@
               ></tr>
               <tr
                 mat-row
-                *matRowDef="let row; columns: ['team1', 'team2', 'score', 'status']"
+                *matRowDef="
+                  let row;
+                  columns: ['team1', 'team2', 'score', 'status']
+                "
                 [class.completed]="row.completed"
               ></tr>
             </table>
