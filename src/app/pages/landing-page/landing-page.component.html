@@ -1,10 +1,10 @@
 <div class="landing-container">
   <section class="hero-section">
     <div class="content">
-      <h1 class="title" @fadeInUp>Beer Pong Tournament Manager</h1>
+      <h1 class="title" @fadeInUp>Bier Pong Turnier Manager</h1>
       <p class="subtitle" @fadeInUp>
-        Create, manage, and track your beer pong tournaments with ease.
-        Professional tools for serious players.
+        Erstellen, verwalten und verfolgen Sie Ihre Bierpong-Turniere mit
+        Leichtigkeit. Professionelle Tools für ernsthafte Spieler ;)
       </p>
       <div class="text-center">
         <button
@@ -14,7 +14,7 @@
           (click)="navigateToTournaments()"
         >
           <mat-icon>emoji_events</mat-icon>
-          Start Your Tournament
+          Starte dein Turnier
         </button>
       </div>
 
@@ -32,7 +32,7 @@
 
   <section class="rules-section">
     <div class="content">
-      <h2 @fadeInUp>Official Tournament Rules</h2>
+      <h2 @fadeInUp>Offizielle Turnier Regeln</h2>
       <div class="rules-grid">
         @for (rule of rules; track rule.title) {
           <div class="rule-card" @slideInRight>

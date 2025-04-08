@@ -59,88 +59,87 @@ export class LandingPageComponent {
   features = [
     {
       icon: 'emoji_events',
-      title: 'Tournament Management',
-      description: 'Create and manage beer pong tournaments with ease',
+      title: 'Turnierverwaltung',
+      description:
+        'Erstellen und verwalten Sie Bierpong-Turniere mit Leichtigkeit',
     },
     {
       icon: 'groups',
-      title: 'Team Organization',
+      title: 'Teamverwaltung',
       description:
-        'Register teams and track their progress throughout the event',
+        'Registriere Teams und verfolge ihren Fortschritt im gesamten Event',
     },
     {
       icon: 'scoreboard',
       title: 'Live Scoring',
-      description: 'Real-time score tracking and match updates',
+      description: 'Echtzeit-Scoreverfolgung und Match-Updates',
     },
-    {
-      icon: 'bar_chart',
-      title: 'Statistics',
-      description: 'View detailed statistics and tournament brackets',
-    },
+    // {
+    //   icon: 'bar_chart',
+    //   title: 'Statistiken',
+    //   description: 'Detaillierte Statistiken und Turnierbrackets',
+    // },
   ];
 
   rules = [
     {
       icon: 'sports_hockey',
-      title: 'Basic Setup',
+      title: 'Grundlegendes Setup',
       description:
-        "Each team arranges 6-10 cups in a triangle formation. Teams take turns throwing ping pong balls into the opponent's cups.",
+        'Jedes Team stellt 6-10 Becher in einer Dreiecksformation auf. Die Teams werfen abwechselnd Tischtennisbälle in die Becher des Gegners.',
     },
     {
       icon: 'gavel',
-      title: 'Shooting Rules',
+      title: 'Shooting Regeln',
       description:
-        'Players must keep their elbows behind the table edge when shooting. Both overhand and underhand throws are allowed.',
+        'Die Spieler müssen ihre Ellbogen beim Werfen hinter der Tischkante halten. Es sind sowohl Überhand- als auch Unterhandwürfe erlaubt.',
     },
     {
       icon: 'sports_score',
       title: 'Scoring',
       description:
-        "When a ball lands in a cup, that cup is removed from the game. The first team to eliminate all of their opponent's cups wins.",
+        'Wenn ein Ball in einem Becher landet, wird dieser Becher aus dem Spiel entfernt. Die erste Mannschaft, die alle Becher des Gegners entfernt hat, gewinnt.',
     },
     {
       icon: 'add_circle',
-      title: 'Both players hit one cup each',
+      title: 'Je ein Becher wird getroffen',
       description:
-        'If both players of a team each hit a cup, both cups must be emptied and put away. Now it\' "balls back"! The team gets the balls back and each player can throw again.',
+        'Wenn beide Spieler einer Mannschaft jeweils einen Becher treffen, müssen beide Becher geleert und weggestellt werden. Jetzt heißt es „Bälle zurück“! Die Mannschaft bekommt die Bälle zurück und jeder Spieler darf noch einmal werfen.',
     },
     {
       icon: 'looks_3',
-      title: 'Both players hit the same cup',
+      title: 'Derselbe Becher wird getroffen',
       description:
-        "If both players hit the same cup in a round, the opposing team must empty 3 cups and put them away. The other two cups are chosen by the opposing team. And don't forget: Both players have scored, so balls back!",
+        'Wenn beide Spieler in einer Runde DENSELBEN Becher treffen, muss die gegnerische Mannschaft 3 Becher leeren und wegstellen. Die anderen beiden Becher werden von der gegnerischen Mannschaft gewählt. Und nicht vergessen: Beide Spieler haben gepunktet, also Bälle zurück!',
     },
     {
       icon: 'sports_basketball',
       title: 'Rebound',
       description:
-        'Derived from basketball, you can earn a chance for a second throw attempt here. If the ball rolls back over the table into your half of the court after your throw, you can grab it and throw it again. However, the ball must not touch the ground beforehand! The only important thing is that the second attempt must be a "trick shot". This means you have to incorporate a trick into the shot. Let your imagination run wild and wow the fans (e.g. against a wall, behind your back, between your legs, backwards, etc.)',
+        'Abgeleitet vom Basketball, kannst du dir hier die Chance auf einen zweiten Wurfversuch verdienen. Wenn der Ball nach deinem Wurf über den Tisch zurück in deine Spielfeldhälfte rollt, kannst du ihn dir schnappen und erneut werfen. Allerdings darf der Ball vorher nicht den Boden berühren! Wichtig ist nur, dass der zweite Versuch ein „Trickwurf“ sein muss. Das heißt, du musst einen Trick in den Wurf einbauen. Lasst eurer Fantasie freien Lauf und begeistert die Fans (z. B. gegen eine Wand, hinter dem Rücken, zwischen den Beinen, rückwärts, usw.)',
     },
     {
-      icon: 'blow',
+      icon: 'air',
       title: 'Blowout',
       description:
-        'If the opponent hits one of your cups, it may still be spinning in the cup. As long as this is the case, you can blow into the cup to get the ball out again and thus prevent the cup from spinning. Caution: If the ball touches the beer in the cup just once, it is immediately lost and can no longer be blown.',
+        'Wenn der Gegner einen eurer Becher trifft, kann es sein, dass sich der Ball noch im Becher dreht. Solange dies der Fall ist, könnt ihr in den Becher pusten, um den Ball wieder herauszuholen und so zu verhindern, dass sich der Becher dreht. Aber Vorsicht! Wenn der Ball nur einmal das Bier im Becher berührt, ist er sofort verloren und kann nicht mehr gepustet werden.',
     },
 
     {
       icon: 'refresh',
       title: 'Re-racking',
       description:
-        'Teams can request to re-arrange their remaining cups once (if 10 twice) per game when there are (if 10:  6,) 4, 3, or 2 cups left.',
+        'Die Mannschaften können beantragen, ihre verbleibenden Becher einmal (bei 10 Becher zweimal) pro Spiel neu zu ordnen, wenn 4 oder weniger Becher übrig sind (bei 10: 6 oder weniger).',
     },
     {
       icon: 'sports_baseball',
       title: 'Bounce Shots',
-      description:
-        'If a ball bounces before going in a cup, it counts as two cups. However, bounce shots can be defended by the opposing team.',
+      description: `Wenn ein Ball absichtlich auf dem Tisch aufspringt ("getischt") und anschließend in einem Becher landet, zählt dieser Treffer als zwei Becher. Die verteidigende Mannschaft darf jedoch versuchen, den Ball nach dem Aufprall auf dem Tisch und bevor er den Becher trifft, abzuwehren (z. B. durch Wegschlagen oder Fangen).`,
     },
     {
       icon: 'replay',
-      title: 'Redemption',
-      description:
-        'When a team loses their last cup and didnt start the round, they get a chance at redemption by trying to hit all remaining cups in one turn.',
+      title: 'Nachwurf',
+      description: `Wenn ein Team seinen letzten Becher verliert und die Runde nicht begonnen hat, erhält es eine Chance auf Wiedergutmachung, indem es versucht, alle verbleibenden Becher in einem Zug zu treffen.`,
     },
   ];
 

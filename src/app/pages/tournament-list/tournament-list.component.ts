@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import {
-  TournamentService,
-  Tournament,
-} from '../../services/tournament.service';
+import { RouterModule } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
+import {
+  Tournament,
+  TournamentService,
+} from '../../services/tournament.service';
 
 @Component({
   selector: 'app-tournament-list',
@@ -39,10 +39,10 @@ export class TournamentListComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete Tournament',
-        message: `Are you sure you want to delete the tournament "${tournament.name}"?`,
-        confirmText: 'Delete',
-        cancelText: 'Cancel',
+        title: 'Lösche das Turnier',
+        message: `Sind Sie sicher, dass Sie das Turnier löschen möchten? "${tournament.name}"?`,
+        confirmText: 'Löschen',
+        cancelText: 'Abbrechen',
       },
     });
 

@@ -50,7 +50,7 @@ import { TeamDialogComponent } from './team-dialog/team-dialog.component';
 export class TournamentDetailComponent implements OnInit {
   tournamentId: string | null = null;
   tournament: Tournament | null = null;
-  activeTab: number = 1;
+  activeTab: number = 0;
 
   useRandomNames = signal<boolean>(false);
   addTeamBtn = viewChild<MatButton>('addTeamBtn');

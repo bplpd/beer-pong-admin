@@ -26,24 +26,26 @@
           <h2>Teams</h2>
           <app-number-groups [id]="tournamentId" />
         </div>
-        <button
-          #addTeamBtn
-          mat-raised-button
-          color="primary"
-          (click)="addTeam()"
-        >
-          <mat-icon>add</mat-icon>
-          <span class="ml-1">Add Team</span>
-        </button>
-        <button
-          #addTeamBtn
-          mat-raised-button
-          color="primary"
-          (click)="resetPoints()"
-        >
-          <mat-icon>reset</mat-icon>
-          <span class="ml-1">Reset Points</span>
-        </button>
+        <div class="flex flex-row gap-1">
+          <button
+            #addTeamBtn
+            mat-raised-button
+            color="primary"
+            (click)="addTeam()"
+          >
+            <mat-icon>add</mat-icon>
+            <span class="ml-1">Team hinzufügen</span>
+          </button>
+          <button
+            #addTeamBtn
+            mat-raised-button
+            color="primary"
+            (click)="resetPoints()"
+          >
+            <mat-icon>delete</mat-icon>
+            <span class="ml-1">Lösche alle Punkte</span>
+          </button>
+        </div>
       </div>
 
       <app-group [id]="tournamentId" />
