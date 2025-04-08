@@ -1,59 +1,98 @@
-# BeerPongAdmin
+# Beer Pong Tournament Admin 🏓
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.1.
+A modern web application for managing beer pong tournaments, built with Angular and TypeScript.
 
-## Development server
+## Application Architecture
 
-To start a local development server, run:
+This is a fully client-side application with no backend server required. All data is stored locally in the browser's localStorage, making it simple to deploy and use without any database setup.
+
+### Data Storage
+
+- Tournament data is stored in the browser's localStorage
+- No external database or server required
+- Data persists across browser sessions
+- Each tournament stores:
+  - Tournament details (name, date, description)
+  - Teams and their properties
+  - Match results and scores
+  - Group and knockout phase information
+- Note: Clearing browser data will remove all tournament information
+
+## Features
+
+- Create and manage tournaments
+- Add and organize teams
+- Track match scores in real-time
+- Support for group stages and knockout rounds
+- Automatic progression system
+- Responsive design for all devices
+- German localization
+
+## Tech Stack
+
+- Angular 19
+- TypeScript
+- Angular Material
+- TailwindCSS
+- Docker & Nginx
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20.x or higher
+- npm 10.x or higher
+- Docker (for containerization)
+
+### Development Setup
+
+1. Clone the repository:
 
 ```bash
-ng serve
+git clone https://github.com/yourusername/beer-pong-admin.git
+cd beer-pong-admin
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+2. Install dependencies:
 
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+3. Start the development server:
 
 ```bash
-ng generate --help
+npm start
 ```
 
-## Building
+The application will be available at `http://localhost:4200`
 
-To build the project run:
+### Docker Deployment
+
+1. Build the Docker image:
 
 ```bash
-ng build
+docker build -t beer-pong-admin .
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+2. Run the container:
 
 ```bash
-ng test
+docker run -p 80:80 beer-pong-admin
 ```
 
-## Running end-to-end tests
+The application will be available at `http://localhost`
 
-For end-to-end (e2e) testing, run:
+## Features in Detail
 
-```bash
-ng e2e
-```
+## Contributing
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## Additional Resources
+## License
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. Copyright (c) 2024.
